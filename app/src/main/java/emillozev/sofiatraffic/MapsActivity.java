@@ -1,6 +1,8 @@
 package emillozev.sofiatraffic;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -14,12 +16,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 0;
+    private final int REQUEST_CODE_PERMISSION = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,64 +51,61 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //mMap.addMarker(new MarkerOptions().position(sofia).title("Marker in Sofia"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sofia));
 
-        int responsePermission = 0;
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         } else {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                // Should we show an explanation?
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    alertUserForLocationError();
-                    // Show an expanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
-
-                } else {
-
-                    // No explanation needed, we can request the permission.
-
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-                    if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED){
-                          //  onRequestPermissionsResult(MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-                        mMap.setMyLocationEnabled(true);
-                    }else{
-                        alertUserForLocationError();
-                    }
-                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                    // app-defined int constant. The callback method gets the
-                    // result of the request.
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    showMessageOKCancel("You need to allow access to Location Services",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                                            REQUEST_CODE_PERMISSION);
+                                }
+                            });
+                    return;
                 }
-            }
-        }
-
-        Log.i("Request Code", responsePermission + "");
-    }
-
-    //@Override
-    public void onRequestPermissionsResult(int requestCode) {
-
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
-
+                requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_CODE_PERMISSION);
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
-    private void alertUserForLocationError(){
-        AlertDialogFragment dialog = new AlertDialogFragment();
-        dialog.show(getFragmentManager(),"error_dialog");
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(MapsActivity.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    Toast.makeText(MapsActivity.this, "Location Permission Enabled!", Toast.LENGTH_LONG).show();
+                    mMap.setMyLocationEnabled(true);
+                } else {
+                    // Permission Denied
+                    Toast.makeText(MapsActivity.this, "In order this application to work, Location Services must be enabled!", Toast.LENGTH_LONG).show();
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_PERMISSION);
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
 }
