@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -81,6 +84,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setNegativeButton("Cancel", null)
                 .create()
                 .show();
+    }
+
+    private void createLineBetweenTwoPoints(){
+        Polyline line = mMap.addPolyline(new PolylineOptions()
+                .add(new LatLng(51.5, -0.1), new LatLng(40.7, -74.0))
+                .width(5)
+                .color(Color.RED));
     }
 
     @Override
