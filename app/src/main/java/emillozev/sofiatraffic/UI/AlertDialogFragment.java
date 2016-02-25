@@ -1,4 +1,4 @@
-package emillozev.sofiatraffic;
+package emillozev.sofiatraffic.UI;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,15 +12,9 @@ public class AlertDialogFragment extends DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState){
         Context context = getActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                .setTitle("Location Error!")
-                .setMessage("In order this application to work location services must be enabled.")
-                .setPositiveButton("Ok", null)
-                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        System.exit(0);
-                    }
-                });
+                .setTitle("Location Needed!")
+                .setMessage("Turn on your location!")
+                .setPositiveButton("Ok", null);
         AlertDialog dialog = builder.create();
         return dialog;
     }

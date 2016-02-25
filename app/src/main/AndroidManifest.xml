@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".StartScreen"
+            android:name=".UI.StartScreen"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -40,7 +40,7 @@
             android:value="AIzaSyBtM3wWlHryJsqdGUjllgIyA1w6VxqA4dA"/>
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".UI.MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>
     </application>
