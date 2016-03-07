@@ -1,4 +1,4 @@
-package emillozev.sofiatraffic;
+package emillozev.sofiatraffic.UI;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
