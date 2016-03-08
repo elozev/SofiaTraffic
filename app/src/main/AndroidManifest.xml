@@ -44,15 +44,6 @@
             android:name=".UI.MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>
-        <activity
-            android:name=".ZonesActivity"
-            android:label="@string/title_activity_zones"
-            android:parentActivityName=".UI.MapsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="emillozev.sofiatraffic.UI.MapsActivity"/>
-        </activity>
     </application>
 
 </manifest>
