@@ -19,7 +19,7 @@ public class StartScreen extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(StartScreen.this, MapsActivity.class);
+                Intent intent = new Intent(StartScreen.this, MainActivity.class);
                 StartScreen.this.startActivity(intent);
                 StartScreen.this.finish();
             }
