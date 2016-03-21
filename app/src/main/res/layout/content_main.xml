@@ -12,12 +12,21 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/content_frame"/>
+        android:id="@+id/content_frame">
+        <Button
+            android:id="@+id/btn_draw"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Draw Route"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/map"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/map"
+            android:layout_gravity="center"/>
+    </FrameLayout>
 
 
 </RelativeLayout>
