@@ -23,12 +23,14 @@ import java.util.List;
 import emillozev.sofiatraffic.UI.DirectionsJSONParser;
 
 public class DrawRoute {
-    public GoogleMap mMap;
+    private GoogleMap mMap;
     private ArrayList<LatLng> markerPoints;
+    private PolylineOptions linesOptions;
 
     public DrawRoute(GoogleMap map){
         mMap = map;
         markerPoints = new ArrayList<LatLng>();
+        linesOptions = new PolylineOptions();
     }
 
     public ArrayList<LatLng> getMarkerPoints(){
@@ -143,6 +145,8 @@ public class DrawRoute {
             return routes;
         }
 
+
+
         // Executes in UI thread, after the parsing process
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
@@ -170,16 +174,25 @@ public class DrawRoute {
                 }
 
                 // Adding all the points in the route to LineOptions
-                lineOptions.addAll(points);
-                lineOptions.width(11);
-                lineOptions.color(Color.BLUE);
+//                lineOptions.addAll(points);
+//                lineOptions.width(11);
+//                lineOptions.color(Color.BLUE);
             }
 
             // Drawing polyline in the Google Map for the i-th route
-            mMap.addPolyline(lineOptions);
+            //mMap.addPolyline(lineOptions);
+            setLineOptions(points);
         }
     }
+    private void setLineOptions(ArrayList<LatLng> linesOption){
+        linesOptions.addAll(linesOption);
+        linesOptions.width(11);
+        linesOptions.color(Color.BLUE);
+    }
 
+    public PolylineOptions getLinesOptions(){
+        return linesOptions;
+    }
 
     public String getDirectionsUrl(LatLng origin,LatLng dest){
 

@@ -41,10 +41,6 @@
             android:value="AIzaSyBtM3wWlHryJsqdGUjllgIyA1w6VxqA4dA"/>
 
         <activity
-            android:name=".UI.MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
-        <activity
             android:name=".UI.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">

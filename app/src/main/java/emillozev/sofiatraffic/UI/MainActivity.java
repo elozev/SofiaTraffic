@@ -257,6 +257,7 @@ public class MainActivity extends AppCompatActivity
                     String url = mRoute.getDirectionsUrl(origin, dest);
 
                     mRoute.downloadTask(url);
+                    mMap.addPolyline(mRoute.getLinesOptions());
 
                 }
             }
