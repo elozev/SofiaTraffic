@@ -209,7 +209,8 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 // Adding new item to the ArrayList
-                markerPoints.add(point);
+                //markerPoints.add(point);
+                mRoute.addMarkerToList(point);
 
                 // Creating MarkerOptions
                 MarkerOptions options = new MarkerOptions();
@@ -222,9 +223,9 @@ public class MainActivity extends AppCompatActivity
                  * for the end location, the color of marker is RED and
                  * for the rest of markers, the color is AZURE
                  */
-                if (markerPoints.size() == 1) {
+                if (mRoute.getMarkerPointsSize() == 1) {
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                } else if (markerPoints.size() == 2) {
+                } else if (mRoute.getMarkerPointsSize() == 2) {
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 } else {
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
@@ -239,22 +240,18 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onMapLongClick(LatLng point) {
-                // Removes all the points from Google Map
                 mMap.clear();
-
-                // Removes all the points in the ArrayList
                 markerPoints.clear();
             }
         });
 
         btnDraw.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 // Checks, whether start and end locations are captured
-                if (markerPoints.size() >= 2) {
-                    LatLng origin = markerPoints.get(0);
-                    LatLng dest = markerPoints.get(1);
+                if (mRoute.getMarkerPointsSize() >= 2) {
+                    LatLng origin = mRoute.getMarkerPoints().get(0);
+                    LatLng dest = mRoute.getMarkerPoints().get(1);
 
                     // Getting URL to the Google Directions API
                     String url = mRoute.getDirectionsUrl(origin, dest);

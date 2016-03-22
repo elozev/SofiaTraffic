@@ -28,10 +28,23 @@ public class DrawRoute {
 
     public DrawRoute(GoogleMap map){
         mMap = map;
+        markerPoints = new ArrayList<LatLng>();
     }
 
-    public void setMarkerPoints(ArrayList<LatLng> markerPoints1){
-        markerPoints = new ArrayList<LatLng>(markerPoints1);
+    public ArrayList<LatLng> getMarkerPoints(){
+        return markerPoints;
+    }
+
+//    public void setMarkerPoints(ArrayList<LatLng> markers){
+//        markerPoints = new ArrayList<LatLng>(markers);
+//    }
+
+    public int getMarkerPointsSize(){
+        return markerPoints.size();
+    }
+
+    public void addMarkerToList(LatLng point){
+        markerPoints.add(point);
     }
 
     public void downloadTask(String url){
