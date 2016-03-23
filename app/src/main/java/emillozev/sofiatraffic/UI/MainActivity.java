@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
 
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
-        mRoute = new DrawRoute(mMap);
+        mRoute = new DrawRoute();
     }
 
     @Override
@@ -142,6 +142,16 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
+            if (mRoute.getMarkerPointsSize() >= 2) {
+                LatLng origin = mRoute.getMarkerPoints().get(0);
+                LatLng dest = mRoute.getMarkerPoints().get(1);
+
+                // Getting URL to the Google Directions API
+                String url = mRoute.getDirectionsUrl(origin, dest);
+
+                mRoute.downloadTask(url);
+                mMap.addPolyline(mRoute.getLinesOptions());
+            }
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -242,6 +252,7 @@ public class MainActivity extends AppCompatActivity
             public void onMapLongClick(LatLng point) {
                 mMap.clear();
                 markerPoints.clear();
+                mRoute.clearAll();
             }
         });
 
@@ -258,7 +269,6 @@ public class MainActivity extends AppCompatActivity
 
                     mRoute.downloadTask(url);
                     mMap.addPolyline(mRoute.getLinesOptions());
-
                 }
             }
         });

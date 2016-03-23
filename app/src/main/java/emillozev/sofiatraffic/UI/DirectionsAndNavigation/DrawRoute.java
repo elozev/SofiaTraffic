@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -23,12 +22,10 @@ import java.util.List;
 import emillozev.sofiatraffic.UI.DirectionsJSONParser;
 
 public class DrawRoute {
-    private GoogleMap mMap;
     private ArrayList<LatLng> markerPoints;
     private PolylineOptions linesOptions;
 
-    public DrawRoute(GoogleMap map){
-        mMap = map;
+    public DrawRoute(){
         markerPoints = new ArrayList<LatLng>();
         linesOptions = new PolylineOptions();
     }
@@ -37,9 +34,10 @@ public class DrawRoute {
         return markerPoints;
     }
 
-//    public void setMarkerPoints(ArrayList<LatLng> markers){
-//        markerPoints = new ArrayList<LatLng>(markers);
-//    }
+    public void clearAll(){
+        markerPoints = new ArrayList<LatLng>();
+        linesOptions = new PolylineOptions();
+    }
 
     public int getMarkerPointsSize(){
         return markerPoints.size();
@@ -180,7 +178,6 @@ public class DrawRoute {
             }
 
             // Drawing polyline in the Google Map for the i-th route
-            //mMap.addPolyline(lineOptions);
             setLineOptions(points);
         }
     }
