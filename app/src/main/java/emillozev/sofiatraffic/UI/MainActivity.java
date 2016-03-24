@@ -18,12 +18,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,11 +44,13 @@ import emillozev.sofiatraffic.UI.Fragments.ImportFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
+    private static final int REQUEST_PLACE_PICKER = 23;
     public SupportMapFragment mMapFragment;
     private GoogleMap mMap;
     private final int REQUEST_CODE_PERMISSION = 0;
     private ArrayList<LatLng> markerPoints;
     public DrawRoute mRoute;
+    private LatLng searchAddresDetails;
 
 
 
@@ -75,10 +80,51 @@ public class MainActivity extends AppCompatActivity
         else
             fm.beginTransaction().show(mMapFragment).commit();
 
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+//        autocompleteFragment.getView().setBackgroundColor(Color.WHITE);
+
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i("PLACE TAG", "Place: " + place.getName());
+
+                String placeDetailsStr = place.getName() + "\n"
+                        + place.getId() + "\n"
+                        + place.getLatLng().toString() + "\n"
+                        + place.getAddress() + "\n"
+                        + place.getAttributions();
+                setSearchAddresDetailsLatLng(place.getLatLng());
+                mMap.addMarker(new MarkerOptions()
+                        .position(place.getLatLng())
+                        .title((String) place.getAddress())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
+
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("PLACE TAG", "An error occurred: " + status);
+            }
+        });
+
+
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
         mRoute = new DrawRoute();
     }
+
+
+    public void setSearchAddresDetailsLatLng(LatLng lat) {
+        searchAddresDetails = lat;
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -131,7 +177,7 @@ public class MainActivity extends AppCompatActivity
             else
                 sFm.beginTransaction().show(mMapFragment).commit();
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.search_places) {
 
         } else if (id == R.id.nav_manage) {
 
@@ -153,7 +199,7 @@ public class MainActivity extends AppCompatActivity
                 mMap.addPolyline(mRoute.getLinesOptions());
             }
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.search_places) {
 
         } else if (id == R.id.nav_manage) {
 
@@ -173,7 +219,6 @@ public class MainActivity extends AppCompatActivity
         //DrawRoute mRoute = new DrawRoute(mMap);
         mMap = googleMap;
         markerPoints = new ArrayList<LatLng>();
-        Button btnDraw = (Button)findViewById(R.id.btn_draw);
 
 
         mMap.setTrafficEnabled(true);
@@ -256,22 +301,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        btnDraw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Checks, whether start and end locations are captured
-                if (mRoute.getMarkerPointsSize() >= 2) {
-                    LatLng origin = mRoute.getMarkerPoints().get(0);
-                    LatLng dest = mRoute.getMarkerPoints().get(1);
-
-                    // Getting URL to the Google Directions API
-                    String url = mRoute.getDirectionsUrl(origin, dest);
-
-                    mRoute.downloadTask(url);
-                    mMap.addPolyline(mRoute.getLinesOptions());
-                }
-            }
-        });
 
     }
 

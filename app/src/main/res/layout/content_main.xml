@@ -14,21 +14,22 @@
         android:layout_height="match_parent"
         android:id="@+id/content_frame">
 
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/map"
             android:layout_gravity="center_horizontal|bottom">
 
-            <Button
-                android:id="@+id/btn_draw"
-                android:layout_width="fill_parent"
+            <fragment
+                android:id="@+id/place_autocomplete_fragment"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Draw Route"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal|bottom"
-                android:paddingBottom="70sp"/>
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                />
+
         </FrameLayout>
+
     </FrameLayout>
 
 
