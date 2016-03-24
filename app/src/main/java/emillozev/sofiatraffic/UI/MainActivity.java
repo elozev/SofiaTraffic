@@ -21,6 +21,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -50,7 +52,9 @@ public class MainActivity extends AppCompatActivity
     private final int REQUEST_CODE_PERMISSION = 0;
     private ArrayList<LatLng> markerPoints;
     public DrawRoute mRoute;
-    private LatLng searchAddresDetails;
+    private LatLng addressOrigin;
+    private LatLng addressDest;
+    private Button getDirectionsButton;
 
 
 
@@ -62,6 +66,9 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mMapFragment = SupportMapFragment.newInstance();
+        getDirectionsButton = (Button) findViewById(R.id.getDirectionsButton);
+        mRoute = new DrawRoute();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -84,8 +91,8 @@ public class MainActivity extends AppCompatActivity
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-//        autocompleteFragment.getView().setBackgroundColor(Color.WHITE);
-
+        PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -98,12 +105,14 @@ public class MainActivity extends AppCompatActivity
                         + place.getLatLng().toString() + "\n"
                         + place.getAddress() + "\n"
                         + place.getAttributions();
-                setSearchAddresDetailsLatLng(place.getLatLng());
+
                 mMap.addMarker(new MarkerOptions()
                         .position(place.getLatLng())
                         .title((String) place.getAddress())
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
+
+                addressOrigin = place.getLatLng();
 
             }
 
@@ -115,15 +124,54 @@ public class MainActivity extends AppCompatActivity
         });
 
 
+        autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i("PLACE TAG", "Place: " + place.getName());
+
+                String placeDetailsStr = place.getName() + "\n"
+                        + place.getId() + "\n"
+                        + place.getLatLng().toString() + "\n"
+                        + place.getAddress() + "\n"
+                        + place.getAttributions();
+
+
+                mMap.addMarker(new MarkerOptions()
+                        .position(place.getLatLng())
+                        .title((String) place.getAddress())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
+                addressDest = place.getLatLng();
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("PLACE TAG", "An error occurred: " + status);
+            }
+        });
+
+
+        getDirectionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRoute.clearAll();
+                mRoute.addMarkerToList(addressOrigin);
+                mRoute.addMarkerToList(addressDest);
+                // Getting URL to the Google Directions API
+                String url = mRoute.getDirectionsUrl(addressOrigin, addressDest);
+                Log.i("DIRECTIONS", "SOMETHING");
+                mRoute.downloadTask(url);
+                mMap.addPolyline(mRoute.getLinesOptions());
+            }
+        });
+
+
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
-        mRoute = new DrawRoute();
     }
 
-
-    public void setSearchAddresDetailsLatLng(LatLng lat) {
-        searchAddresDetails = lat;
-    }
 
 
     @Override
