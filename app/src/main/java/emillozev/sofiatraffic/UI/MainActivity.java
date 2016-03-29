@@ -3,6 +3,7 @@ package emillozev.sofiatraffic.UI;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -402,11 +403,15 @@ public class MainActivity extends AppCompatActivity
             if (!(mobile.isConnected())) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(this);
                 dialog.setMessage("Please turn on Mobile data!");
-                dialog.setPositiveButton(this.getResources().getString(R.string.gps_network_not_enabled),
+                dialog.setPositiveButton(this.getResources().getString(R.string.mobile_data_settings),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                                Intent myIntent = new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+                                Intent myIntent = new Intent();
+                                myIntent.setComponent(new ComponentName(
+                                        "com.android.settings",
+                                        "com.android.settings.Settings$DataUsageSummaryActivity"));
+
                                 MainActivity.this.startActivity(myIntent);
                                 //get gps
                             }
