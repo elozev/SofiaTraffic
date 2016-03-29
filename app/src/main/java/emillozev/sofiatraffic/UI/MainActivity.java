@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -276,6 +278,7 @@ public class MainActivity extends AppCompatActivity
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sofia, zoomLevel));
 
         checkIfLocationTurned();
+        isInternetConnected();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -352,20 +355,22 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void checkIfLocationTurned(){
-        LocationManager lm = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+    private void checkIfLocationTurned() {
+        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         boolean gps_enabled = false;
         boolean network_enabled = false;
 
         try {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch(Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         try {
             network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch(Exception ex) {}
+        } catch (Exception ex) {
+        }
 
-        if(!gps_enabled && !network_enabled) {
+        if (!gps_enabled && !network_enabled) {
             // notify user
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage(this.getResources().getString(R.string.gps_network_not_enabled));
@@ -386,6 +391,39 @@ public class MainActivity extends AppCompatActivity
             dialog.show();
         }
     }
+
+    public void isInternetConnected() {
+        ConnectivityManager connectivityMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobile = connectivityMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        // Check if wifi or mobile network is available or not. If any of them is
+        // available or connected then it will return true, otherwise false;
+
+        if (mobile != null) {
+            if (!(mobile.isConnected())) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setMessage("Please turn on Mobile data!");
+                dialog.setPositiveButton(this.getResources().getString(R.string.gps_network_not_enabled),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                Intent myIntent = new Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS);
+                                MainActivity.this.startActivity(myIntent);
+                                //get gps
+                            }
+                        });
+                dialog.setNegativeButton(MainActivity.this.getString(R.string.cancel_button),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            }
+                        });
+                dialog.show();
+
+            }
+        }
+    }
+
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(MainActivity.this)

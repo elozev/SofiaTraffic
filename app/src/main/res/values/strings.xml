@@ -9,7 +9,6 @@
     <string name="title_activity_zones">ZonesActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="str_btn_draw">Draw Route</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_main">MainActivity</string>
