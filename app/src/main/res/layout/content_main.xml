@@ -14,60 +14,52 @@
         android:layout_height="match_parent"
         android:id="@+id/content_frame">
 
-
-        <FrameLayout
+        <fragment
+            android:id="@+id/place_autocomplete_fragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/map"
-            android:layout_gravity="center_horizontal|bottom">
+            android:layout_height="wrap_content"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_marginTop="20dp"
+            />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="From:"
+            android:id="@+id/textViewFrom"
+            android:textSize="25sp"
+            android:background="#b0beb7b7"/>
 
-            <fragment
-                android:id="@+id/place_autocomplete_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                android:layout_marginTop="20dp"
-                />
+        <fragment
+            android:id="@+id/place_autocomplete_fragment2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_marginTop="110dp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="From:"
-                android:id="@+id/textViewFrom"
-                android:textSize="25sp"
-                android:background="#b0beb7b7"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="To:"
+            android:id="@+id/textViewTo"
+            android:layout_marginTop="90sp"
+            android:textSize="25sp"
+            android:background="#b0beb7b7"/>
 
-            <fragment
-                android:id="@+id/place_autocomplete_fragment2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                android:layout_marginTop="110dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="To:"
-                android:id="@+id/textViewTo"
-                android:layout_marginTop="90sp"
-                android:textSize="25sp"
-                android:background="#b0beb7b7"/>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Get Directions"
-                android:id="@+id/getDirectionsButton"
-                android:layout_gravity="center"
-                android:onClick="b"
-                android:background="#ffffff"/>
-
-
-        </FrameLayout>
-
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Get Directions"
+            android:id="@+id/getDirectionsButton"
+            android:layout_gravity="center"
+            android:background="#ffffff"/>
     </FrameLayout>
 
-
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        android:layout_gravity="center_horizontal|bottom">
+    </FrameLayout>
 
 </RelativeLayout>
