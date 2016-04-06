@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -42,7 +44,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
@@ -101,45 +108,73 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-                for (int i = 0; i < 2; i++) {
-                    MarkerOptions options = new MarkerOptions();
-                    if (i == 0) {
-                        options.position(addressOrigin);
-                    } else {
-                        options.position(addressDest);
-                    }
-                    if (mRoute.getMarkerPointsSize() == 1) {
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                    } else if (mRoute.getMarkerPointsSize() == 2) {
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                    } else {
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
+                if (addressOrigin == null && addressDest == null) {
+                    Toast.makeText(MainActivity.this, "Please fill up both!", Toast.LENGTH_LONG).show();
+                } else {
+                    for (int i = 0; i < 2; i++) {
+                        MarkerOptions options = new MarkerOptions();
+                        if (i == 0) {
+                            options.position(addressOrigin);
+                        } else {
+                            options.position(addressDest);
+                        }
+                        if (mRoute.getMarkerPointsSize() == 1) {
+                            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        } else if (mRoute.getMarkerPointsSize() == 2) {
+                            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        } else {
+                            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                        }
+
+                        // Add new marker to the Google Map Android API V2
+
+                        mMap.addMarker(options);
                     }
 
-                    // Add new marker to the Google Map Android API V2
 
-                    mMap.addMarker(options);
+                    mRoute.clearAll();
+                    mRoute.addMarkerToList(addressOrigin);
+                    mRoute.addMarkerToList(addressDest);
+                    // Getting URL to the Google Directions API
+                    String url = mRoute.getDirectionsUrl(addressOrigin, addressDest);
+                    Log.i("DIRECTIONS", "SOMETHING");
+                    mRoute.downloadTask(url);
+                    mMap.addPolyline(mRoute.getLinesOptions());
+
+                    addToMapPolyline = mRoute.getLinesOptions();
+                    isGetDirectionsClicked = true;
                 }
-
-
-                mRoute.clearAll();
-                mRoute.addMarkerToList(addressOrigin);
-                mRoute.addMarkerToList(addressDest);
-                // Getting URL to the Google Directions API
-                String url = mRoute.getDirectionsUrl(addressOrigin, addressDest);
-                Log.i("DIRECTIONS", "SOMETHING");
-                mRoute.downloadTask(url);
-                mMap.addPolyline(mRoute.getLinesOptions());
-
-                addToMapPolyline = mRoute.getLinesOptions();
-                isGetDirectionsClicked = true;
-
             }
         });
 
 
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
+
+
+        Thread downloadThread = new Thread() {
+            public void run() {
+                org.jsoup.nodes.Document doc = null;
+                try {
+                    doc = Jsoup.connect("http://tix.bg/bg/Sofia/").get();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Elements newsHeadlines = doc.select(".dhtzelement");
+                String[] textFromSite = newsHeadlines.text().toString().split("\\b(?:към|от)\\b");
+                Log.i("HTML", textFromSite[0] + "\n \n" + newsHeadlines.text());
+
+                for (String a: textFromSite){
+                    Log.i("HTML2", a);
+                }
+            }
+        };
+        downloadThread.start();
+
+
+
     }
 
 
@@ -288,12 +323,31 @@ public class MainActivity extends AppCompatActivity
         mMap = googleMap;
         markerPoints = new ArrayList<LatLng>();
 
+        Geocoder geocoder = new Geocoder(MainActivity.this);
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocationName(" бул. Сливница", 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(addresses.size() > 0) {
+            double latitude= addresses.get(0).getLatitude();
+            double longitude= addresses.get(0).getLongitude();
+            Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
+
+            LatLng addressByName = new LatLng(latitude, longitude);
+
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)));
+        }
+
+
 
         mMap.setTrafficEnabled(true);
         // Add a marker in Sofia and move the camera
         LatLng sofia = new LatLng(42.697626, 23.322284);
         float zoomLevel = (float) 11.00; //This goes up to 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sofia, zoomLevel));
+        mMap.addMarker(new MarkerOptions().position(sofia));
 
         checkIfLocationTurned();
         isInternetConnected();
