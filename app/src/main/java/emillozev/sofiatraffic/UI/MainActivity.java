@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isGetDirectionsClicked = false;
     private PolylineOptions addToMapPolyline = new PolylineOptions();
     private String[] textFromSite = null;
+    private List<LatLng> markerForTraffic = new ArrayList<>();
 
 
 
@@ -153,9 +154,9 @@ public class MainActivity extends AppCompatActivity
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
 
-
         Thread downloadThread = new Thread() {
             public void run() {
+                int addressCounter = 0;
                 org.jsoup.nodes.Document doc = null;
                 try {
                     doc = Jsoup.connect("http://tix.bg/bg/Sofia/").get();
@@ -165,10 +166,12 @@ public class MainActivity extends AppCompatActivity
 
                 Elements newsHeadlines = doc.select(".dhtzelement");
                 textFromSite = newsHeadlines.text().toString().split("\\b(?:към|от)\\b");
-                Log.i("HTML", textFromSite[0] + "\n \n" + newsHeadlines.text());
+                //Log.i("HTML", textFromSite[0] + "\n \n" + newsHeadlines.text());
+
+                List<LatLng> toBeCopied = new ArrayList<>();
 
                 for (String a: textFromSite){
-                    Log.i("HTML2", a);
+                  //  Log.i("HTML2", a);
                     Geocoder geocoder = new Geocoder(MainActivity.this);
                     List<Address> addresses = null;
                     try {
@@ -183,22 +186,26 @@ public class MainActivity extends AppCompatActivity
                         Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
 
                         LatLng addressByName = new LatLng(latitude, longitude);
-
-                        //mMap.addMarker(new MarkerOptions().position(addressByName));
-                        Log.i("ADDRESSES2", "Lat: " + latitude + "; Long: " + longitude);
+                        toBeCopied.add(addressByName);
+                        if(toBeCopied.add(addressByName)){
+                            Log.i("COPY", "coping...");
+                        }
+                        addressCounter++;
                     }
+                    Log.i("ADDRESSCOUNTER", addressCounter +"");
                 }
-
+            markerForTraffic = new ArrayList<>(toBeCopied);
             }
         };
         downloadThread.start();
+        try {
+            downloadThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
-
-
-
-
-
+        Log.i("LISTSIZE", markerForTraffic.size() + "");
     }
 
 
@@ -435,6 +442,11 @@ public class MainActivity extends AppCompatActivity
         //   this.mMap.addPolyline(mRoute.getLinesOptions());
         //this.mMap.addPolyline();
 
+
+        for(LatLng latLng: markerForTraffic){
+            mMap.addMarker(new MarkerOptions().position(latLng));
+            Log.i("ADDINGMARKERS", latLng.toString());
+        }
 
 
 }
