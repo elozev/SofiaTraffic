@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity
     private Button getDirectionsButton;
     private boolean isGetDirectionsClicked = false;
     private PolylineOptions addToMapPolyline = new PolylineOptions();
+    private String[] textFromSite = null;
 
 
 
@@ -163,15 +164,38 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 Elements newsHeadlines = doc.select(".dhtzelement");
-                String[] textFromSite = newsHeadlines.text().toString().split("\\b(?:към|от)\\b");
+                textFromSite = newsHeadlines.text().toString().split("\\b(?:към|от)\\b");
                 Log.i("HTML", textFromSite[0] + "\n \n" + newsHeadlines.text());
 
                 for (String a: textFromSite){
                     Log.i("HTML2", a);
+                    Geocoder geocoder = new Geocoder(MainActivity.this);
+                    List<Address> addresses = null;
+                    try {
+                        addresses = geocoder.getFromLocationName(a, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(addresses != null && !addresses.isEmpty()) {
+                        double latitude = addresses.get(0).getLatitude();
+                        double longitude = addresses.get(0).getLongitude();
+                        Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
+
+                        LatLng addressByName = new LatLng(latitude, longitude);
+
+                        //mMap.addMarker(new MarkerOptions().position(addressByName));
+                        Log.i("ADDRESSES2", "Lat: " + latitude + "; Long: " + longitude);
+                    }
                 }
+
             }
         };
         downloadThread.start();
+
+
+
+
 
 
 
@@ -322,25 +346,6 @@ public class MainActivity extends AppCompatActivity
         this.mMap = googleMap;
         mMap = googleMap;
         markerPoints = new ArrayList<LatLng>();
-
-        Geocoder geocoder = new Geocoder(MainActivity.this);
-        List<Address> addresses = null;
-        try {
-            addresses = geocoder.getFromLocationName(" бул. Сливница", 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(addresses.size() > 0) {
-            double latitude= addresses.get(0).getLatitude();
-            double longitude= addresses.get(0).getLongitude();
-            Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
-
-            LatLng addressByName = new LatLng(latitude, longitude);
-
-            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)));
-        }
-
-
 
         mMap.setTrafficEnabled(true);
         // Add a marker in Sofia and move the camera
