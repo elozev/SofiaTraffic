@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -54,10 +56,9 @@ import java.util.List;
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
 import emillozev.sofiatraffic.UI.Fragments.ImportFragment;
-import emillozev.sofiatraffic.UI.LocationTracker.CurrentLocationTracker;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener {
 
     private static final int REQUEST_PLACE_PICKER = 23;
     public SupportMapFragment mMapFragment;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity
     private PolylineOptions addToMapPolyline = new PolylineOptions();
     private String[] textFromSite = null;
     private List<LatLng> markerForTraffic = new ArrayList<>();
+    private LocationManager mLocationManager;
 
 
     @Override
@@ -205,14 +207,35 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        Log.i("LISTSIZE", markerForTraffic.size() + "");
+       // Log.i("LISTSIZE", markerForTraffic.size() + "");
 
 
-        CurrentLocationTracker locationTracker = new CurrentLocationTracker(this);
-
-        if(locationTracker.getIsGPSTrackingEnabled()){
-            Log.i("GETTINGLOCATION", "Lat: " + locationTracker.getLatitude() + "; Long: " + locationTracker.getLongitude());
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        showMessageOKCancel("You need to allow access to Location Services",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                                REQUEST_CODE_PERMISSION);
+                                    }
+                                });
+                        return;
+                    }
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            REQUEST_CODE_PERMISSION);
+                    return;
+                }
+            }
+            return;
         }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
     }
 
 
@@ -445,6 +468,8 @@ public class MainActivity extends AppCompatActivity
         //this.mMap.addPolyline();
 
 
+
+
         for (LatLng latLng : markerForTraffic) {
             mMap.addMarker(new MarkerOptions().position(latLng));
             Log.i("ADDINGMARKERS", latLng.toString());
@@ -560,4 +585,23 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.i("LASTKNOW","Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.d("Latitude","disable");
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d("Latitude","enable");
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d("Latitude","status");
+    }
 }
