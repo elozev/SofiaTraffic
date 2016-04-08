@@ -592,7 +592,7 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
         Log.i("LASTKNOW","Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
         for(LatLng latLng : markerForTraffic) {
-            if(distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1000000)
+            if(distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 10)
             {
                 sendNotifications();
             }
@@ -615,8 +615,8 @@ public class MainActivity extends AppCompatActivity
     private void sendNotifications() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setAutoCancel(true);
-        builder.setContentTitle("VERY IMPORTANT MASSAGE");
-        builder.setContentText(("Ignat e fagot"));
+        builder.setContentTitle("Sofia Traffic Notification");
+        builder.setContentText(("You are getting nearby to a jammed area!"));
         builder.setSmallIcon(R.drawable.common_ic_googleplayservices);
 
         Notification notification = builder.build();
