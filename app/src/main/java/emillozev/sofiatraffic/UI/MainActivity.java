@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,6 +27,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -475,8 +478,9 @@ public class MainActivity extends AppCompatActivity
             Log.i("ADDINGMARKERS", latLng.toString());
         }
 
-
     }
+
+
 
     private void checkIfLocationTurned() {
         LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -588,7 +592,41 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
         Log.i("LASTKNOW","Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
+        for(LatLng latLng : markerForTraffic) {
+            if(distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1000000)
+            {
+                Log.i("BETWEENLATLNG",distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(),
+                                location.getLongitude()) + "");
+                sendNotifications();
+            }
+        }
     }
+
+    public double distanceBetweenLatLng(double lat1, double lng1, double lat2, double lng2) {
+        double earthRadius = 6371; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double dist = (double) (earthRadius * c);
+
+        return dist;
+    }
+
+    private void sendNotifications() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setAutoCancel(true);
+        builder.setContentTitle("VERY IMPORTANT MASSAGE");
+        builder.setContentText(("Ignat e fagot"));
+        builder.setSmallIcon(R.drawable.common_ic_googleplayservices);
+
+        Notification notification = builder.build();
+        NotificationManager manager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(8, notification);
+    }
+
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
