@@ -475,7 +475,6 @@ public class MainActivity extends AppCompatActivity
 
         for (LatLng latLng : markerForTraffic) {
             mMap.addMarker(new MarkerOptions().position(latLng));
-            Log.i("ADDINGMARKERS", latLng.toString());
         }
 
     }
@@ -595,8 +594,6 @@ public class MainActivity extends AppCompatActivity
         for(LatLng latLng : markerForTraffic) {
             if(distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1000000)
             {
-                Log.i("BETWEENLATLNG",distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(),
-                                location.getLongitude()) + "");
                 sendNotifications();
             }
         }
