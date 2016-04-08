@@ -54,6 +54,7 @@ import java.util.List;
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
 import emillozev.sofiatraffic.UI.Fragments.ImportFragment;
+import emillozev.sofiatraffic.UI.LocationTracker.CurrentLocationTracker;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity
     private PolylineOptions addToMapPolyline = new PolylineOptions();
     private String[] textFromSite = null;
     private List<LatLng> markerForTraffic = new ArrayList<>();
-
 
 
     @Override
@@ -170,8 +170,8 @@ public class MainActivity extends AppCompatActivity
 
                 List<LatLng> toBeCopied = new ArrayList<>();
 
-                for (String a: textFromSite){
-                  //  Log.i("HTML2", a);
+                for (String a : textFromSite) {
+                    //  Log.i("HTML2", a);
                     Geocoder geocoder = new Geocoder(MainActivity.this);
                     List<Address> addresses = null;
                     try {
@@ -180,21 +180,21 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
 
-                    if(addresses != null && !addresses.isEmpty()) {
+                    if (addresses != null && !addresses.isEmpty()) {
                         double latitude = addresses.get(0).getLatitude();
                         double longitude = addresses.get(0).getLongitude();
                         Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
 
                         LatLng addressByName = new LatLng(latitude, longitude);
                         toBeCopied.add(addressByName);
-                        if(toBeCopied.add(addressByName)){
+                        if (toBeCopied.add(addressByName)) {
                             Log.i("COPY", "coping...");
                         }
                         addressCounter++;
                     }
-                    Log.i("ADDRESSCOUNTER", addressCounter +"");
+                    Log.i("ADDRESSCOUNTER", addressCounter + "");
                 }
-            markerForTraffic = new ArrayList<>(toBeCopied);
+                markerForTraffic = new ArrayList<>(toBeCopied);
             }
         };
         downloadThread.start();
@@ -206,8 +206,14 @@ public class MainActivity extends AppCompatActivity
 
 
         Log.i("LISTSIZE", markerForTraffic.size() + "");
-    }
 
+
+        CurrentLocationTracker locationTracker = new CurrentLocationTracker(this);
+
+        if(locationTracker.getIsGPSTrackingEnabled()){
+            Log.i("GETTINGLOCATION", "Lat: " + locationTracker.getLatitude() + "; Long: " + locationTracker.getLongitude());
+        }
+    }
 
 
     @Override
@@ -264,7 +270,7 @@ public class MainActivity extends AppCompatActivity
                 sFm.beginTransaction().show(mMapFragment).commit();
 
 
-            if(isGetDirectionsClicked == true && addToMapPolyline != null){
+            if (isGetDirectionsClicked == true && addToMapPolyline != null) {
                 mMap.addPolyline(addToMapPolyline);
                 isGetDirectionsClicked = false;
                 addToMapPolyline = null;
@@ -331,8 +337,6 @@ public class MainActivity extends AppCompatActivity
             });
 
 
-
-
             //fragmentManager.beginTransaction().hide(importFragment).commit();
 
         } else if (id == R.id.nav_tools) {
@@ -385,8 +389,6 @@ public class MainActivity extends AppCompatActivity
                 return;
             }
         }
-
-
 
 
         this.mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -443,13 +445,13 @@ public class MainActivity extends AppCompatActivity
         //this.mMap.addPolyline();
 
 
-        for(LatLng latLng: markerForTraffic){
+        for (LatLng latLng : markerForTraffic) {
             mMap.addMarker(new MarkerOptions().position(latLng));
             Log.i("ADDINGMARKERS", latLng.toString());
         }
 
 
-}
+    }
 
     private void checkIfLocationTurned() {
         LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
