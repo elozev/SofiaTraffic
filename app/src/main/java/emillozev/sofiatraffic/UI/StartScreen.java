@@ -9,7 +9,7 @@ import emillozev.sofiatraffic.R;
 
 public class StartScreen extends Activity {
 
-    private final int SPLASH_DISPLAY_LENGTH = 1000;
+    private final int SPLASH_DISPLAY_LENGTH = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,5 +25,6 @@ public class StartScreen extends Activity {
             }
         }, SPLASH_DISPLAY_LENGTH);
     }
+
 
 }

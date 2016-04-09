@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity
 
         Thread downloadThread = new Thread() {
             public void run() {
-                int addressCounter = 0;
                 org.jsoup.nodes.Document doc = null;
                 try {
                     doc = Jsoup.connect("http://tix.bg/bg/Sofia/").get();
@@ -188,16 +187,15 @@ public class MainActivity extends AppCompatActivity
                     if (addresses != null && !addresses.isEmpty()) {
                         double latitude = addresses.get(0).getLatitude();
                         double longitude = addresses.get(0).getLongitude();
-                        Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
+                      //  Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
 
                         LatLng addressByName = new LatLng(latitude, longitude);
                         toBeCopied.add(addressByName);
                         if (toBeCopied.add(addressByName)) {
-                            Log.i("COPY", "coping...");
+                        //Log.i("COPY", "coping...");
                         }
-                        addressCounter++;
                     }
-                    Log.i("ADDRESSCOUNTER", addressCounter + "");
+                    //Log.i("ADDRESSCOUNTER", addressCounter + "");
                 }
                 markerForTraffic = new ArrayList<>(toBeCopied);
             }
@@ -209,8 +207,6 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-
-       // Log.i("LISTSIZE", markerForTraffic.size() + "");
 
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -237,8 +233,9 @@ public class MainActivity extends AppCompatActivity
             }
             return;
         }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); //the ints are getting how often get location info
 
+        //this.onLocationChanged(null);
     }
 
 
@@ -475,6 +472,7 @@ public class MainActivity extends AppCompatActivity
 
         for (LatLng latLng : markerForTraffic) {
             mMap.addMarker(new MarkerOptions().position(latLng));
+           // Log.i("ADDINGMARKERS", latLng.toString());
         }
 
     }
@@ -588,19 +586,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.i("LASTKNOW","Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
-        for(LatLng latLng : markerForTraffic) {
-            if(distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 10)
-            {
-                sendNotifications();
-            }
-        }
-    }
+
 
     public double distanceBetweenLatLng(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371; //meters
+        double earthRadius = 6371; //kilometers
         double dLat = Math.toRadians(lat2-lat1);
         double dLng = Math.toRadians(lng2-lng1);
         double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -615,8 +604,8 @@ public class MainActivity extends AppCompatActivity
     private void sendNotifications() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setAutoCancel(true);
-        builder.setContentTitle("Sofia Traffic Notification");
-        builder.setContentText(("You are getting nearby to a jammed area!"));
+        builder.setContentTitle("VERY IMPORTANT MASSAGE");
+        builder.setContentText(("Ignat e fagot"));
         builder.setSmallIcon(R.drawable.common_ic_googleplayservices);
 
         Notification notification = builder.build();
@@ -624,6 +613,22 @@ public class MainActivity extends AppCompatActivity
         manager.notify(8, notification);
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        Button speedButton = (Button)this.findViewById(R.id.speedometerButton);
+        if(location == null) {
+            speedButton.setText("-.- m/s");
+        }else{
+            float currentSpeed = location.getSpeed();
+            speedButton.setText(currentSpeed + " m/s");
+        }
+
+      //  for(LatLng latLng : markerForTraffic) {
+        //    if(distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
+          //      sendNotifications();
+          //  }
+        //}
+    }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {

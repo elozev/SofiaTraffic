@@ -60,6 +60,13 @@
         android:layout_height="match_parent"
         android:id="@+id/map"
         android:layout_gravity="center_horizontal|bottom">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:background="@android:color/transparent"
+            android:id="@+id/speedometerButton"
+            android:layout_gravity="left|bottom"/>
     </FrameLayout>
 
 </RelativeLayout>
