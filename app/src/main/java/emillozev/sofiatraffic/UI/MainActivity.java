@@ -604,8 +604,8 @@ public class MainActivity extends AppCompatActivity
     private void sendNotifications() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setAutoCancel(true);
-        builder.setContentTitle("VERY IMPORTANT MASSAGE");
-        builder.setContentText(("Ignat e fagot"));
+        builder.setContentTitle("Sofia Traffic Notification");
+        builder.setContentText(("You are getting nearby a jammed area!"));
         builder.setSmallIcon(R.drawable.common_ic_googleplayservices);
 
         Notification notification = builder.build();
