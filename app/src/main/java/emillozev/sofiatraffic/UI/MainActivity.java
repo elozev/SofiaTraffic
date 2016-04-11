@@ -78,7 +78,9 @@ public class MainActivity extends AppCompatActivity
     private List<LatLng> markerForTraffic = new ArrayList<>();
     private LocationManager mLocationManager;
     private Button mSearchButton;
-
+    private boolean isSearchButtonOnMap = true;
+    private Button mSpeedButton;
+    private Button mClearRouteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +88,19 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mSpeedButton = (Button) findViewById(R.id.speedometerButton);
+        mClearRouteButton = (Button) findViewById(R.id.clear_route);
+        mSearchButton = (Button) findViewById(R.id.searchButton);
+
+        if(!isGetDirectionsClicked){
+            mClearRouteButton.getBackground().setAlpha(100);
+            mClearRouteButton.setText("");
+        }
 
         mMapFragment = SupportMapFragment.newInstance();
         getDirectionsButton = (Button) findViewById(R.id.getDirectionsButton);
         mRoute = new DrawRoute();
-        mSearchButton = (Button) findViewById(R.id.searchButton);
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -110,73 +120,94 @@ public class MainActivity extends AppCompatActivity
         else
             fm.beginTransaction().show(mMapFragment).commit();
 
+        mMapFragment.getMapAsync(this);
+        mMap = mMapFragment.getMap();
 
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Log.i("SEARCHBUTTON", "click");
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                ImportFragment importFragment = new ImportFragment();
+                if(isSearchButtonOnMap == true){
+                    mSearchButton.setText("Back");
+                    isSearchButtonOnMap = false;
+                    mSpeedButton.setText("");
 
-                if (mMapFragment.isAdded()) {
-                    fm.beginTransaction().hide(mMapFragment).commit();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    ImportFragment importFragment = new ImportFragment();
+
+                    if (mMapFragment.isAdded()) {
+                        fm.beginTransaction().hide(mMapFragment).commit();
+                    }
+
+                    fragmentTransaction.add(R.id.content_frame, importFragment);
+                    fragmentTransaction.show(importFragment).commit();
+
+                    PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                            getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+                    autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                        @Override
+                        public void onPlaceSelected(Place place) {
+                            // TODO: Get info about the selected place.
+                            Log.i("AUTO COMPLETE", "Place: " + place.getName());
+
+                            String placeDetailsStr = place.getName() + "\n"
+                                    + place.getId() + "\n"
+                                    + place.getLatLng().toString() + "\n"
+                                    + place.getAddress() + "\n"
+                                    + place.getAttributions();
+                            //txtPlaceDetails.setText(placeDetailsStr);
+                            addressOrigin = place.getLatLng();
+                        }
+
+                        @Override
+                        public void onError(Status status) {
+                            // TODO: Handle the error.
+                            Log.i("AUTO COMPLETE", "An error occurred: " + status);
+                        }
+                    });
+
+                    PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
+                            getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+
+                    autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                        @Override
+                        public void onPlaceSelected(Place place) {
+                            // TODO: Get info about the selected place.
+                            Log.i("AUTO COMPLETE", "Place: " + place.getName());
+
+                            String placeDetailsStr = place.getName() + "\n"
+                                    + place.getId() + "\n"
+                                    + place.getLatLng().toString() + "\n"
+                                    + place.getAddress() + "\n"
+                                    + place.getAttributions();
+                            //txtPlaceDetails.setText(placeDetailsStr);
+                            addressDest = place.getLatLng();
+                        }
+
+                        @Override
+                        public void onError(Status status) {
+                            // TODO: Handle the error.
+                            Log.i("AUTO COMPLETE", "An error occurred: " + status);
+                        }
+                    });
+
+
+                }else{
+                    mSearchButton.setText("Search");
+                    isSearchButtonOnMap = true;
+                    mSpeedButton.setText("-.-km/h");
+
+                    if (!mMapFragment.isAdded())
+                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
+                    else
+                        fm.beginTransaction().show(mMapFragment).commit();
+
                 }
 
-                fragmentTransaction.add(R.id.content_frame, importFragment);
-                fragmentTransaction.show(importFragment).commit();
-
-                PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-                autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                    @Override
-                    public void onPlaceSelected(Place place) {
-                        // TODO: Get info about the selected place.
-                        Log.i("AUTO COMPLETE", "Place: " + place.getName());
-
-                        String placeDetailsStr = place.getName() + "\n"
-                                + place.getId() + "\n"
-                                + place.getLatLng().toString() + "\n"
-                                + place.getAddress() + "\n"
-                                + place.getAttributions();
-                        //txtPlaceDetails.setText(placeDetailsStr);
-                        addressOrigin = place.getLatLng();
-                    }
-
-                    @Override
-                    public void onError(Status status) {
-                        // TODO: Handle the error.
-                        Log.i("AUTO COMPLETE", "An error occurred: " + status);
-                    }
-                });
-
-                PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
-                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
-
-                autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                    @Override
-                    public void onPlaceSelected(Place place) {
-                        // TODO: Get info about the selected place.
-                        Log.i("AUTO COMPLETE", "Place: " + place.getName());
-
-                        String placeDetailsStr = place.getName() + "\n"
-                                + place.getId() + "\n"
-                                + place.getLatLng().toString() + "\n"
-                                + place.getAddress() + "\n"
-                                + place.getAttributions();
-                        //txtPlaceDetails.setText(placeDetailsStr);
-                        addressDest = place.getLatLng();
-                    }
-
-                    @Override
-                    public void onError(Status status) {
-                        // TODO: Handle the error.
-                        Log.i("AUTO COMPLETE", "An error occurred: " + status);
-                    }
-                });
             }
+
         });
 
         getDirectionsButton.setOnClickListener(new View.OnClickListener() {
@@ -221,14 +252,20 @@ public class MainActivity extends AppCompatActivity
 
                     addToMapPolyline = mRoute.getLinesOptions();
                     isGetDirectionsClicked = true;
+
+                    if (!mMapFragment.isAdded())
+                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
+                    else
+                        fm.beginTransaction().show(mMapFragment).commit();
+
+                    mClearRouteButton.setText("Clear Route");
+                    mClearRouteButton.getBackground().setAlpha(64);
                 }
+
             }
         });
 
 
-
-        mMapFragment.getMapAsync(this);
-        mMap = mMapFragment.getMap();
 
         Thread downloadThread = new Thread() {
             public void run() {
@@ -354,10 +391,8 @@ public class MainActivity extends AppCompatActivity
         ImportFragment importFragment = new ImportFragment();
 
 
-
-
-        if (mMapFragment.isAdded())
-            sFm.beginTransaction().hide(mMapFragment).commit();
+      //  if (mMapFragment.isAdded())
+        //    sFm.beginTransaction().hide(mMapFragment).commit();
 
         if (id[0] == R.id.map_menu) {
             fm.beginTransaction().replace(R.id.map, new ImportFragment()).commit();
@@ -389,15 +424,6 @@ public class MainActivity extends AppCompatActivity
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
                 public void onPlaceSelected(Place place) {
-                    // TODO: Get info about the selected place.
-                    Log.i("AUTO COMPLETE", "Place: " + place.getName());
-
-                    String placeDetailsStr = place.getName() + "\n"
-                            + place.getId() + "\n"
-                            + place.getLatLng().toString() + "\n"
-                            + place.getAddress() + "\n"
-                            + place.getAttributions();
-                    //txtPlaceDetails.setText(placeDetailsStr);
                     addressOrigin = place.getLatLng();
                 }
 
@@ -414,15 +440,6 @@ public class MainActivity extends AppCompatActivity
             autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
                 public void onPlaceSelected(Place place) {
-                    // TODO: Get info about the selected place.
-                    Log.i("AUTO COMPLETE", "Place: " + place.getName());
-
-                    String placeDetailsStr = place.getName() + "\n"
-                            + place.getId() + "\n"
-                            + place.getLatLng().toString() + "\n"
-                            + place.getAddress() + "\n"
-                            + place.getAttributions();
-                    //txtPlaceDetails.setText(placeDetailsStr);
                     addressDest = place.getLatLng();
                 }
 
@@ -433,8 +450,6 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-
-            //fragmentManager.beginTransaction().hide(importFragment).commit();
 
         } else if (id[0] == R.id.nav_tools) {
 
@@ -450,7 +465,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onMapReady(final GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
         mMap = googleMap;
         markerPoints = new ArrayList<LatLng>();
@@ -486,6 +501,7 @@ public class MainActivity extends AppCompatActivity
                 return;
             }
         }
+
 
 
 //        this.mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -540,6 +556,12 @@ public class MainActivity extends AppCompatActivity
 
         for (LatLng latLng : markerForTraffic) {
             mMap.addMarker(new MarkerOptions().position(latLng));
+        }
+
+        if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+            mMap.addPolyline(addToMapPolyline);
+            isGetDirectionsClicked = false;
+            addToMapPolyline = null;
         }
 
     }
@@ -682,19 +704,26 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        Button speedButton = (Button)this.findViewById(R.id.speedometerButton);
-        if(location == null) {
-            speedButton.setText("-.- km/h");
-        }else{
-            float currentSpeed = location.getSpeed();
-            speedButton.setText( (double) Math.round(currentSpeed*(1000/60)*100)/100 + " km/h");
+
+        if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+            mMap.addPolyline(addToMapPolyline);
+            isGetDirectionsClicked = false;
+            addToMapPolyline = null;
         }
 
-      //  for(LatLng latLng : markerForTraffic) {
-        //    if(distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
-          //      sendNotifications();
-          //  }
-        //}
+        if(isSearchButtonOnMap == true){
+            isSearchButtonOnMap = false;
+            mSpeedButton.setText("");
+        }else{
+            float currentSpeed = location.getSpeed();
+            mSpeedButton.setText( (double) Math.round(currentSpeed*(1000/60)*100)/100 + " km/h");
+        }
+
+        for(LatLng latLng : markerForTraffic) {
+            if(distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
+                sendNotifications();
+            }
+        }
     }
 
     @Override
