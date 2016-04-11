@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity
     private String[] textFromSite = null;
     private List<LatLng> markerForTraffic = new ArrayList<>();
     private LocationManager mLocationManager;
+    private Button mSearchButton;
 
 
     @Override
@@ -89,6 +90,7 @@ public class MainActivity extends AppCompatActivity
         mMapFragment = SupportMapFragment.newInstance();
         getDirectionsButton = (Button) findViewById(R.id.getDirectionsButton);
         mRoute = new DrawRoute();
+        mSearchButton = (Button) findViewById(R.id.searchButton);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        final android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 
 
         if (!mMapFragment.isAdded())
@@ -108,6 +110,74 @@ public class MainActivity extends AppCompatActivity
         else
             fm.beginTransaction().show(mMapFragment).commit();
 
+
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.i("SEARCHBUTTON", "click");
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                ImportFragment importFragment = new ImportFragment();
+
+                if (mMapFragment.isAdded()) {
+                    fm.beginTransaction().hide(mMapFragment).commit();
+                }
+
+                fragmentTransaction.add(R.id.content_frame, importFragment);
+                fragmentTransaction.show(importFragment).commit();
+
+                PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+                autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                    @Override
+                    public void onPlaceSelected(Place place) {
+                        // TODO: Get info about the selected place.
+                        Log.i("AUTO COMPLETE", "Place: " + place.getName());
+
+                        String placeDetailsStr = place.getName() + "\n"
+                                + place.getId() + "\n"
+                                + place.getLatLng().toString() + "\n"
+                                + place.getAddress() + "\n"
+                                + place.getAttributions();
+                        //txtPlaceDetails.setText(placeDetailsStr);
+                        addressOrigin = place.getLatLng();
+                    }
+
+                    @Override
+                    public void onError(Status status) {
+                        // TODO: Handle the error.
+                        Log.i("AUTO COMPLETE", "An error occurred: " + status);
+                    }
+                });
+
+                PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
+                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+
+                autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                    @Override
+                    public void onPlaceSelected(Place place) {
+                        // TODO: Get info about the selected place.
+                        Log.i("AUTO COMPLETE", "Place: " + place.getName());
+
+                        String placeDetailsStr = place.getName() + "\n"
+                                + place.getId() + "\n"
+                                + place.getLatLng().toString() + "\n"
+                                + place.getAddress() + "\n"
+                                + place.getAttributions();
+                        //txtPlaceDetails.setText(placeDetailsStr);
+                        addressDest = place.getLatLng();
+                    }
+
+                    @Override
+                    public void onError(Status status) {
+                        // TODO: Handle the error.
+                        Log.i("AUTO COMPLETE", "An error occurred: " + status);
+                    }
+                });
+            }
+        });
 
         getDirectionsButton.setOnClickListener(new View.OnClickListener() {
 
@@ -154,6 +224,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
 
 
         mMapFragment.getMapAsync(this);
@@ -274,7 +345,7 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        final int[] id = {item.getItemId()};
         final FragmentManager fm = getFragmentManager();
         final android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
 
@@ -282,10 +353,13 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ImportFragment importFragment = new ImportFragment();
 
+
+
+
         if (mMapFragment.isAdded())
             sFm.beginTransaction().hide(mMapFragment).commit();
 
-        if (id == R.id.map_menu) {
+        if (id[0] == R.id.map_menu) {
             fm.beginTransaction().replace(R.id.map, new ImportFragment()).commit();
             if (!mMapFragment.isAdded())
                 sFm.beginTransaction().add(R.id.map, mMapFragment).commit();
@@ -299,9 +373,9 @@ public class MainActivity extends AppCompatActivity
                 addToMapPolyline = null;
             }
 
-        } else if (id == R.id.list_traffic_zones) {
+        } else if (id[0] == R.id.list_traffic_zones) {
 
-        } else if (id == R.id.search_places) {
+        } else if (id[0] == R.id.search_places) {
             if (mMapFragment.isAdded()) {
                 sFm.beginTransaction().hide(mMapFragment).commit();
             }
@@ -362,11 +436,11 @@ public class MainActivity extends AppCompatActivity
 
             //fragmentManager.beginTransaction().hide(importFragment).commit();
 
-        } else if (id == R.id.nav_tools) {
+        } else if (id[0] == R.id.nav_tools) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id[0] == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id[0] == R.id.nav_send) {
 
         }
 
@@ -414,65 +488,58 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        this.mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
-            @Override
-            public void onMapClick(LatLng point) {
-
-                // Already 10 locations with 8 waypoints and 1 start location and 1 end location.
-                // Upto 8 waypoints are allowed in a query for non-business users
-                if (markerPoints.size() >= 10) {
-                    return;
-                }
-
-                // Adding new item to the ArrayList
-                //markerPoints.add(point);
-                mRoute.addMarkerToList(point);
-
-                // Creating MarkerOptions
-                MarkerOptions options = new MarkerOptions();
-
-                // Setting the position of the marker
-                options.position(point);
-
-                /**
-                 * For the start location, the color of marker is GREEN and
-                 * for the end location, the color of marker is RED and
-                 * for the rest of markers, the color is AZURE
-                 */
-                if (mRoute.getMarkerPointsSize() == 1) {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                } else if (mRoute.getMarkerPointsSize() == 2) {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                } else {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                }
-
-                // Add new marker to the Google Map Android API V2
-                mMap.addMarker(options);
-            }
-        });
-
-        this.mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-
-            @Override
-            public void onMapLongClick(LatLng point) {
-                mMap.clear();
-                markerPoints.clear();
-                mRoute.clearAll();
-            }
-        });
-
-
-        //   this.mMap.addPolyline(mRoute.getLinesOptions());
-        //this.mMap.addPolyline();
-
-
+//        this.mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//
+//            @Override
+//            public void onMapClick(LatLng point) {
+//
+//                // Already 10 locations with 8 waypoints and 1 start location and 1 end location.
+//                // Upto 8 waypoints are allowed in a query for non-business users
+//                if (markerPoints.size() >= 10) {
+//                    return;
+//                }
+//
+//                // Adding new item to the ArrayList
+//                //markerPoints.add(point);
+//                mRoute.addMarkerToList(point);
+//
+//                // Creating MarkerOptions
+//                MarkerOptions options = new MarkerOptions();
+//
+//                // Setting the position of the marker
+//                options.position(point);
+//
+//                /**
+//                 * For the start location, the color of marker is GREEN and
+//                 * for the end location, the color of marker is RED and
+//                 * for the rest of markers, the color is AZURE
+//                 */
+//                if (mRoute.getMarkerPointsSize() == 1) {
+//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+//                } else if (mRoute.getMarkerPointsSize() == 2) {
+//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+//                } else {
+//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+//                }
+//
+//                // Add new marker to the Google Map Android API V2
+//                mMap.addMarker(options);
+//            }
+//        });
+//
+//        this.mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+//
+//            @Override
+//            public void onMapLongClick(LatLng point) {
+//                //mMap.clear();
+//                markerPoints.clear();
+//                mRoute.clearAll();
+//            }
+//        });
 
 
         for (LatLng latLng : markerForTraffic) {
             mMap.addMarker(new MarkerOptions().position(latLng));
-           // Log.i("ADDINGMARKERS", latLng.toString());
         }
 
     }
@@ -617,10 +684,10 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
         Button speedButton = (Button)this.findViewById(R.id.speedometerButton);
         if(location == null) {
-            speedButton.setText("-.- m/s");
+            speedButton.setText("-.- km/h");
         }else{
             float currentSpeed = location.getSpeed();
-            speedButton.setText(currentSpeed + " m/s");
+            speedButton.setText( (double) Math.round(currentSpeed*(1000/60)*100)/100 + " km/h");
         }
 
       //  for(LatLng latLng : markerForTraffic) {
