@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity
     private Button mSpeedButton;
     private Button mClearRouteButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         mSearchButton = (Button) findViewById(R.id.searchButton);
 
 
-        if(!isGetDirectionsClicked){
+        if (!isGetDirectionsClicked) {
             //mClearRouteButton.getBackground().setAlpha(100);
             mClearRouteButton.setText("");
         }
@@ -101,7 +102,6 @@ public class MainActivity extends AppCompatActivity
         mMapFragment = SupportMapFragment.newInstance();
         getDirectionsButton = (Button) findViewById(R.id.getDirectionsButton);
         mRoute = new DrawRoute();
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-                if(isSearchButtonOnMap == true){
+                if (isSearchButtonOnMap == true) {
                     mSearchButton.setText("Back");
                     isSearchButtonOnMap = false;
                     mSpeedButton.setText("");
@@ -150,15 +150,6 @@ public class MainActivity extends AppCompatActivity
                     autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                         @Override
                         public void onPlaceSelected(Place place) {
-                            // TODO: Get info about the selected place.
-                            Log.i("AUTO COMPLETE", "Place: " + place.getName());
-
-                            String placeDetailsStr = place.getName() + "\n"
-                                    + place.getId() + "\n"
-                                    + place.getLatLng().toString() + "\n"
-                                    + place.getAddress() + "\n"
-                                    + place.getAttributions();
-                            //txtPlaceDetails.setText(placeDetailsStr);
                             addressOrigin = place.getLatLng();
                         }
 
@@ -175,15 +166,6 @@ public class MainActivity extends AppCompatActivity
                     autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                         @Override
                         public void onPlaceSelected(Place place) {
-                            // TODO: Get info about the selected place.
-                            Log.i("AUTO COMPLETE", "Place: " + place.getName());
-
-                            String placeDetailsStr = place.getName() + "\n"
-                                    + place.getId() + "\n"
-                                    + place.getLatLng().toString() + "\n"
-                                    + place.getAddress() + "\n"
-                                    + place.getAttributions();
-                            //txtPlaceDetails.setText(placeDetailsStr);
                             addressDest = place.getLatLng();
                         }
 
@@ -194,8 +176,14 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
 
+                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+                        mMap.addPolyline(addToMapPolyline);
+                        isGetDirectionsClicked = false;
+                        addToMapPolyline = null;
+                    }
 
-                }else{
+
+                } else {
                     mSearchButton.setText("Search");
                     isSearchButtonOnMap = true;
                     mSpeedButton.setText("-.-km/h");
@@ -204,6 +192,13 @@ public class MainActivity extends AppCompatActivity
                         fm.beginTransaction().add(R.id.map, mMapFragment).commit();
                     else
                         fm.beginTransaction().show(mMapFragment).commit();
+
+                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+                        mMap.addPolyline(addToMapPolyline);
+                        isGetDirectionsClicked = false;
+                        addToMapPolyline = null;
+                    }
+
 
                 }
 
@@ -228,13 +223,9 @@ public class MainActivity extends AppCompatActivity
                         } else {
                             options.position(addressDest);
                         }
-                        if (mRoute.getMarkerPointsSize() == 1) {
-                            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                        } else if (mRoute.getMarkerPointsSize() == 2) {
-                            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                        } else {
-                            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                        }
+
+                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
 
                         // Add new marker to the Google Map Android API V2
 
@@ -261,61 +252,30 @@ public class MainActivity extends AppCompatActivity
 
                     mClearRouteButton.setText("Clear Route");
                     //mClearRouteButton.getBackground().setAlpha(64);
+
+                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+                        mMap.addPolyline(addToMapPolyline);
+                        isGetDirectionsClicked = false;
+                        addToMapPolyline = null;
+                    }
+
                 }
+                if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+                    mMap.addPolyline(addToMapPolyline);
+                    isGetDirectionsClicked = false;
+                    addToMapPolyline = null;
+                }
+
 
             }
         });
 
 
-
-        Thread downloadThread = new Thread() {
-            public void run() {
-                org.jsoup.nodes.Document doc = null;
-                try {
-                    doc = Jsoup.connect("http://tix.bg/bg/Sofia/").get();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Elements newsHeadlines = doc.select(".dhtzelement");
-                textFromSite = newsHeadlines.text().toString().split("\\b(?:към|от)\\b");
-                //Log.i("HTML", textFromSite[0] + "\n \n" + newsHeadlines.text());
-
-                List<LatLng> toBeCopied = new ArrayList<>();
-
-                for (String a : textFromSite) {
-                    //  Log.i("HTML2", a);
-                    Geocoder geocoder = new Geocoder(MainActivity.this);
-                    List<Address> addresses = null;
-                    try {
-                        addresses = geocoder.getFromLocationName(a, 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (addresses != null && !addresses.isEmpty()) {
-                        double latitude = addresses.get(0).getLatitude();
-                        double longitude = addresses.get(0).getLongitude();
-                      //  Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
-
-                        LatLng addressByName = new LatLng(latitude, longitude);
-                        toBeCopied.add(addressByName);
-                        if (toBeCopied.add(addressByName)) {
-                        //Log.i("COPY", "coping...");
-                        }
-                    }
-                    //Log.i("ADDRESSCOUNTER", addressCounter + "");
-                }
-                markerForTraffic = new ArrayList<>(toBeCopied);
-            }
-        };
-        downloadThread.start();
-        try {
-            downloadThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+            mMap.addPolyline(addToMapPolyline);
+            isGetDirectionsClicked = false;
+            addToMapPolyline = null;
         }
-
 
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -345,6 +305,90 @@ public class MainActivity extends AppCompatActivity
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); //the ints are getting how often get location info
 
         //this.onLocationChanged(null);
+        mClearRouteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMap.clear();
+                markerPoints.clear();
+                mRoute.clearAll();
+
+                for (LatLng latLng : markerForTraffic) {
+                    mMap.addMarker(new MarkerOptions().position(latLng));
+                }
+            }
+        });
+
+        String []textSite = parsingTheSite();
+
+        if(textSite != null) {
+            List<LatLng> toBeCopied = new ArrayList<>();
+
+            for (String a : textFromSite) {
+                //  Log.i("HTML2", a);
+                Geocoder geocoder = new Geocoder(MainActivity.this);
+                List<Address> addresses = null;
+                try {
+                    addresses = geocoder.getFromLocationName(a, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (addresses != null && !addresses.isEmpty()) {
+                    double latitude = addresses.get(0).getLatitude();
+                    double longitude = addresses.get(0).getLongitude();
+                    //  Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
+
+                    LatLng addressByName = new LatLng(latitude, longitude);
+                    toBeCopied.add(addressByName);
+                    if (toBeCopied.add(addressByName)) {
+                        Log.i("COPY", "coping...");
+                    }
+                }
+                //Log.i("ADDRESSCOUNTER", addressCounter + "");
+
+                markerForTraffic = new ArrayList<>(toBeCopied);
+            }
+        }else{
+            Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public String[] parsingTheSite() {
+
+//        final Handler mHandler = new Handler(Looper.getMainLooper()) {
+//            @Override
+//            public void handleMessage(Message message) {
+//                // This is where you do your work in the UI thread.
+//                // Your worker tells you in the message what to do.
+//
+//            }
+//        };
+
+        Thread downloadThread = new Thread(new Runnable() {
+
+            public void run() {
+                org.jsoup.nodes.Document doc = null;
+
+                try {
+                    doc = Jsoup.connect("http://tix.bg/bg/Sofia/").get();
+                } catch (IOException e) {
+                    return;
+                }
+
+
+                Elements newsHeadlines = doc.select(".dhtzelement");
+                textFromSite = newsHeadlines.text().toString().split("\\b(?:към|от)\\b");
+
+            }
+        });
+        downloadThread.start();
+        try {
+            downloadThread.join();
+        } catch (InterruptedException e) {
+
+        }
+
+        return textFromSite;
     }
 
 
@@ -392,7 +436,7 @@ public class MainActivity extends AppCompatActivity
         ImportFragment importFragment = new ImportFragment();
 
 
-      //  if (mMapFragment.isAdded())
+        //  if (mMapFragment.isAdded())
         //    sFm.beginTransaction().hide(mMapFragment).commit();
 
         if (id[0] == R.id.map_menu) {
@@ -504,7 +548,6 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-
 //        this.mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 //
 //            @Override
@@ -563,10 +606,10 @@ public class MainActivity extends AppCompatActivity
             mMap.addPolyline(addToMapPolyline);
             isGetDirectionsClicked = false;
             addToMapPolyline = null;
+            Log.i("CHECKIN", "In the if");
         }
 
     }
-
 
 
     private void checkIfLocationTurned() {
@@ -677,15 +720,14 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     public double distanceBetweenLatLng(double lat1, double lng1, double lat2, double lng2) {
         double earthRadius = 6371; //kilometers
-        double dLat = Math.toRadians(lat2-lat1);
-        double dLng = Math.toRadians(lng2-lng1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double dist = (double) (earthRadius * c);
 
         return dist;
@@ -712,16 +754,16 @@ public class MainActivity extends AppCompatActivity
             addToMapPolyline = null;
         }
 
-        if(isSearchButtonOnMap == true){
+        if (isSearchButtonOnMap == true) {
             isSearchButtonOnMap = false;
             mSpeedButton.setText("");
-        }else{
+        } else {
             float currentSpeed = location.getSpeed();
-            mSpeedButton.setText( (double) Math.round(currentSpeed*(1000/60)*100)/100 + " km/h");
+            mSpeedButton.setText((double) Math.round(currentSpeed * (1000 / 60) * 100) / 100 + " km/h");
         }
 
-        for(LatLng latLng : markerForTraffic) {
-            if(distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
+        for (LatLng latLng : markerForTraffic) {
+            if (distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
                 sendNotifications();
             }
         }
@@ -729,15 +771,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d("Latitude","disable");
+        Log.d("Latitude", "disable");
     }
+
     @Override
     public void onProviderEnabled(String provider) {
-        Log.d("Latitude","enable");
+        Log.d("Latitude", "enable");
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        Log.d("Latitude","status");
+        Log.d("Latitude", "status");
     }
+
+
 }
