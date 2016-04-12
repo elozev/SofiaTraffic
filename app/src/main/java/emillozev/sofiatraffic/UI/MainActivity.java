@@ -92,8 +92,9 @@ public class MainActivity extends AppCompatActivity
         mClearRouteButton = (Button) findViewById(R.id.clear_route);
         mSearchButton = (Button) findViewById(R.id.searchButton);
 
+
         if(!isGetDirectionsClicked){
-            mClearRouteButton.getBackground().setAlpha(100);
+            //mClearRouteButton.getBackground().setAlpha(100);
             mClearRouteButton.setText("");
         }
 
@@ -259,7 +260,7 @@ public class MainActivity extends AppCompatActivity
                         fm.beginTransaction().show(mMapFragment).commit();
 
                     mClearRouteButton.setText("Clear Route");
-                    mClearRouteButton.getBackground().setAlpha(64);
+                    //mClearRouteButton.getBackground().setAlpha(64);
                 }
 
             }
@@ -730,7 +731,6 @@ public class MainActivity extends AppCompatActivity
     public void onStatusChanged(String provider, int status, Bundle extras) {
         Log.d("Latitude","disable");
     }
-
     @Override
     public void onProviderEnabled(String provider) {
         Log.d("Latitude","enable");

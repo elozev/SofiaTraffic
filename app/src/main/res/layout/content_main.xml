@@ -76,7 +76,8 @@
             android:id="@+id/searchButton"
             android:text="search"
             android:layout_gravity="right|bottom"
-            android:background="#289e9e9e"/>
+            android:background="#FF3c3cb0"
+            android:allowUndo="true"/>
 
         <Button
             android:layout_width="135dp"
@@ -84,7 +85,7 @@
             android:id="@+id/clear_route"
             android:text="Clear Route"
             android:layout_gravity="center|bottom"
-            android:background="#289e9e9e"/>
+            android:background="#FF3c3cb0"/>
 
 
     </FrameLayout>
