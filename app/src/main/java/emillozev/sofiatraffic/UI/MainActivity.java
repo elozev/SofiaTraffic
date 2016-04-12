@@ -630,7 +630,7 @@ public class MainActivity extends AppCompatActivity
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (!(mobile.isConnected()) && !(wifi.isConnected())) {
+        if(!(mobile.isConnected()) && !(wifi.isConnected())) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage("Please turn on Mobile data or Wi-Fi!");
             dialog.setNeutralButton(this.getResources().getString(R.string.mobile_data_settings),
@@ -650,7 +650,7 @@ public class MainActivity extends AppCompatActivity
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                            Intent myIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                            Intent myIntent = new Intent(Settings.ACTION_WIFI_SETTINGS);
 
                             MainActivity.this.startActivity(myIntent);
                             //get gps
