@@ -620,6 +620,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     public void isInternetConnected() {
         ConnectivityManager connectivityMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mobile = connectivityMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
@@ -627,46 +628,45 @@ public class MainActivity extends AppCompatActivity
         // available or connected then it will return true, otherwise false;
 
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifi = connManager .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-            if (!(mobile.isConnected()) && !(wifi.isConnected())) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                dialog.setMessage("Please turn on Mobile data or Wi-Fi!");
-                dialog.setNeutralButton(this.getResources().getString(R.string.mobile_data_settings),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                                Intent myIntent = new Intent();
-                                myIntent.setComponent(new ComponentName(
-                                        "com.android.settings",
-                                        "com.android.settings.Settings$DataUsageSummaryActivity"));
+        if (!(mobile.isConnected()) && !(wifi.isConnected())) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage("Please turn on Mobile data or Wi-Fi!");
+            dialog.setNeutralButton(this.getResources().getString(R.string.mobile_data_settings),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            Intent myIntent = new Intent();
+                            myIntent.setComponent(new ComponentName(
+                                    "com.android.settings",
+                                    "com.android.settings.Settings$DataUsageSummaryActivity"));
 
-                                MainActivity.this.startActivity(myIntent);
-                                //get gps
-                            }
-                        });
-                dialog.setPositiveButton(this.getResources().getString(R.string.wifi_settings),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                                Intent myIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                            MainActivity.this.startActivity(myIntent);
+                            //get gps
+                        }
+                    });
+            dialog.setPositiveButton(this.getResources().getString(R.string.wifi_settings),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            Intent myIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
 
-                                MainActivity.this.startActivity(myIntent);
-                                //get gps
-                            }
-                        });
-                dialog.setNegativeButton(MainActivity.this.getString(R.string.cancel_button),
-                        new DialogInterface.OnClickListener() {
+                            MainActivity.this.startActivity(myIntent);
+                            //get gps
+                        }
+                    });
+            dialog.setNegativeButton(MainActivity.this.getString(R.string.cancel_button),
+                    new DialogInterface.OnClickListener() {
 
-                            @Override
-                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                            }
-                        });
-                dialog.show();
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        }
+                    });
+            dialog.show();
 
-            }
+        }
     }
-
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(MainActivity.this)
