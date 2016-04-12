@@ -55,6 +55,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
@@ -655,11 +656,13 @@ public class MainActivity extends AppCompatActivity
         // Check if wifi or mobile network is available or not. If any of them is
         // available or connected then it will return true, otherwise false;
 
-        if (mobile != null) {
-            if (!(mobile.isConnected())) {
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connManager .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+            if (!(mobile.isConnected()) && !(wifi.isConnected())) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                dialog.setMessage("Please turn on Mobile data!");
-                dialog.setPositiveButton(this.getResources().getString(R.string.mobile_data_settings),
+                dialog.setMessage("Please turn on Mobile data or Wi-Fi!");
+                dialog.setNeutralButton(this.getResources().getString(R.string.mobile_data_settings),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface paramDialogInterface, int paramInt) {
@@ -667,6 +670,16 @@ public class MainActivity extends AppCompatActivity
                                 myIntent.setComponent(new ComponentName(
                                         "com.android.settings",
                                         "com.android.settings.Settings$DataUsageSummaryActivity"));
+
+                                MainActivity.this.startActivity(myIntent);
+                                //get gps
+                            }
+                        });
+                dialog.setPositiveButton(this.getResources().getString(R.string.wifi_settings),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                Intent myIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
 
                                 MainActivity.this.startActivity(myIntent);
                                 //get gps
@@ -682,7 +695,6 @@ public class MainActivity extends AppCompatActivity
                 dialog.show();
 
             }
-        }
     }
 
 
