@@ -85,7 +85,7 @@
             android:id="@+id/clear_route"
             android:text="Clear Route"
             android:layout_gravity="center|bottom"
-            android:background="#FF3c3cb0"/>
+            android:background="@android:color/transparent"/>
 
 
     </FrameLayout>
