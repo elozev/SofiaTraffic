@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity
 
 
         if (!isGetDirectionsClicked) {
-            //mClearRouteButton.getBackground().setAlpha(100);
+            mClearRouteButton.getBackground().setAlpha(100);
             mClearRouteButton.setText("");
         }
 
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     mSearchButton.setText("Search");
                     isSearchButtonOnMap = true;
-                    mSpeedButton.setText("-.-km/h");
+                    //mSpeedButton.setText("-.-km/h");
 
                     if (!mMapFragment.isAdded())
                         fm.beginTransaction().add(R.id.map, mMapFragment).commit();
@@ -199,12 +199,13 @@ public class MainActivity extends AppCompatActivity
                         addToMapPolyline = null;
                     }
 
-
                 }
 
             }
 
         });
+
+
 
         getDirectionsButton.setOnClickListener(new View.OnClickListener() {
 
@@ -251,31 +252,14 @@ public class MainActivity extends AppCompatActivity
                         fm.beginTransaction().show(mMapFragment).commit();
 
                     mClearRouteButton.setText("Clear Route");
-                    //mClearRouteButton.getBackground().setAlpha(64);
-
-                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-                        mMap.addPolyline(addToMapPolyline);
-                        isGetDirectionsClicked = false;
-                        addToMapPolyline = null;
-                    }
+                    mClearRouteButton.getBackground().setAlpha(64);
 
                 }
-                if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-                    mMap.addPolyline(addToMapPolyline);
-                    isGetDirectionsClicked = false;
-                    addToMapPolyline = null;
-                }
-
-
+                mMap.addPolyline(mRoute.getLinesOptions());
+                mSearchButton.setText("Search");
+                isSearchButtonOnMap = true;
             }
         });
-
-
-        if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-            mMap.addPolyline(addToMapPolyline);
-            isGetDirectionsClicked = false;
-            addToMapPolyline = null;
-        }
 
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -304,7 +288,7 @@ public class MainActivity extends AppCompatActivity
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); //the ints are getting how often get location info
 
-        //this.onLocationChanged(null);
+
         mClearRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -315,6 +299,9 @@ public class MainActivity extends AppCompatActivity
                 for (LatLng latLng : markerForTraffic) {
                     mMap.addMarker(new MarkerOptions().position(latLng));
                 }
+
+                mClearRouteButton.setText("");
+                mClearRouteButton.getBackground().setAlpha(0);
             }
         });
 
@@ -324,45 +311,28 @@ public class MainActivity extends AppCompatActivity
             List<LatLng> toBeCopied = new ArrayList<>();
 
             for (String a : textFromSite) {
-                //  Log.i("HTML2", a);
+
                 Geocoder geocoder = new Geocoder(MainActivity.this);
                 List<Address> addresses = null;
+
                 try {
                     addresses = geocoder.getFromLocationName(a, 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (IOException e) {}
 
                 if (addresses != null && !addresses.isEmpty()) {
-                    double latitude = addresses.get(0).getLatitude();
-                    double longitude = addresses.get(0).getLongitude();
-                    //  Log.i("ADDRESS", "Lat: " + latitude + " Long: " + longitude);
-
-                    LatLng addressByName = new LatLng(latitude, longitude);
-                    toBeCopied.add(addressByName);
-                    if (toBeCopied.add(addressByName)) {
-                        Log.i("COPY", "coping...");
-                    }
+                    toBeCopied.add(new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude()));
                 }
-                //Log.i("ADDRESSCOUNTER", addressCounter + "");
 
-                markerForTraffic = new ArrayList<>(toBeCopied);
             }
+            markerForTraffic = new ArrayList<>(toBeCopied);
         }else{
             Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
         }
+
     }
 
     public String[] parsingTheSite() {
 
-//        final Handler mHandler = new Handler(Looper.getMainLooper()) {
-//            @Override
-//            public void handleMessage(Message message) {
-//                // This is where you do your work in the UI thread.
-//                // Your worker tells you in the message what to do.
-//
-//            }
-//        };
 
         Thread downloadThread = new Thread(new Runnable() {
 
@@ -755,7 +725,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (isSearchButtonOnMap == true) {
-            isSearchButtonOnMap = false;
+            //isSearchButtonOnMap = false;
             mSpeedButton.setText("");
         } else {
             float currentSpeed = location.getSpeed();
