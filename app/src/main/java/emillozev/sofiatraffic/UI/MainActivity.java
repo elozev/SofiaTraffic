@@ -133,9 +133,26 @@ public class MainActivity extends AppCompatActivity
         mStartNavigationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q=Taronga+Zoo,+Sydney+Australia");
+
+                PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
+                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+
+                autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                    @Override
+                    public void onPlaceSelected(Place place) {
+                        addressDest = place.getLatLng();
+                    }
+
+                    @Override
+                    public void onError(Status status) {
+                        // TODO: Handle the error.
+                        Log.i("AUTO COMPLETE", "An error occurred: " + status);
+                    }
+                });
+
+                Uri gmmIntentUri = Uri.parse("google.navigation:"+ "w" + "=" + addressDest.latitude + "," + addressDest.longitude);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                //mapIntent.setPackage("com.google.android.apps.maps");
+                mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);
             }
         });
