@@ -36,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -87,6 +88,39 @@ public class MainActivity extends AppCompatActivity
     private Button mStartNavigationButton;
     public boolean isCopyReady = false;
 
+
+    public void onChechBoxClicked(View view){
+        boolean checked = ((CheckBox) view).isChecked();
+
+        switch(view.getId()){
+            case R.id.Walking:
+                if (checked){
+
+                }
+                else{
+
+                }
+                break;
+            case R.id.Car:
+                if (checked){
+
+                }
+                else{
+
+                }
+                break;
+            case R.id.Bus:
+                if (checked){
+
+                }
+                else{
+
+                }
+                break;
+        }
+    }
+
+//    final CheckBox checkbox = (CheckBox) findViewById(R.id.Walking);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
