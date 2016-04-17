@@ -19,6 +19,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity
     private Button mSpeedButton;
     private Button mClearRouteButton;
     private Button mStartNavigationButton;
+    public boolean isCopyReady = false;
 
 
     @Override
@@ -318,32 +320,50 @@ public class MainActivity extends AppCompatActivity
                 mClearRouteButton.getBackground().setAlpha(0);
             }
         });
+//
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                String []textSite = parsingTheSite();
+//
+//                if(textSite != null) {
+//                    List<LatLng> toBeCopied = new ArrayList<>();
+//
+//                    for (String a : textFromSite) {
+//
+//                        Geocoder geocoder = new Geocoder(MainActivity.this);
+//                        List<Address> addresses = null;
+//
+//                        try {
+//                            addresses = geocoder.getFromLocationName(a, 1);
+//                        } catch (IOException e) {}
+//
+//                        if (addresses != null && !addresses.isEmpty()) {
+//                            toBeCopied.add(new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude()));
+//                            Log.i("MARKERS","ADDING TO LIST");
+//                        }
+//
+//                    }
+//                    markerForTraffic = new ArrayList<>(toBeCopied);
+//                    isCopyReady = true;
+//
+//                }else{
+//                    Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
+//                }
+//
+//            }
+//        });
+//
+//
+//        if(isCopyReady){
+//            addMarkers();
+//        }
 
-        String []textSite = parsingTheSite();
-
-        if(textSite != null) {
-            List<LatLng> toBeCopied = new ArrayList<>();
-
-            for (String a : textFromSite) {
-
-                Geocoder geocoder = new Geocoder(MainActivity.this);
-                List<Address> addresses = null;
-
-                try {
-                    addresses = geocoder.getFromLocationName(a, 1);
-                } catch (IOException e) {}
-
-                if (addresses != null && !addresses.isEmpty()) {
-                    toBeCopied.add(new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude()));
-                }
-
-            }
-            markerForTraffic = new ArrayList<>(toBeCopied);
-        }else{
-            Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
-        }
-
+        GeoCoderIsShit geoCoderIsShit = new GeoCoderIsShit();
+        geoCoderIsShit.execute("ape");
     }
+
+
 
     public String[] parsingTheSite() {
 
@@ -374,7 +394,12 @@ public class MainActivity extends AppCompatActivity
 
         return textFromSite;
     }
-
+    public void addMarkers(){
+        for(LatLng latLng: markerForTraffic){
+            mMap.addMarker(new MarkerOptions().position(latLng));
+            Log.i("ADDINGTOMAP",latLng + "");
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -593,10 +618,12 @@ public class MainActivity extends AppCompatActivity
 //        });
 
 
+
         for (LatLng latLng : markerForTraffic) {
-            mMap.addMarker(new MarkerOptions().position(latLng));
+
             Log.i("AddingMarkers","++++++");
         }
+
 
         if (isGetDirectionsClicked == true && addToMapPolyline != null) {
             mMap.addPolyline(addToMapPolyline);
@@ -789,6 +816,46 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onProviderDisabled(String provider) {
         Log.d("Latitude", "status");
+    }
+
+    public class GeoCoderIsShit extends AsyncTask<String,Integer,List<LatLng>>{
+        @Override
+        protected List<LatLng> doInBackground(String... params) {
+            String []textSite = parsingTheSite();
+
+            if(textSite != null) {
+                List<LatLng> toBeCopied = new ArrayList<>();
+
+                for (String a : textSite) {
+
+                    Geocoder geocoder = new Geocoder(MainActivity.this);
+                    List<Address> addresses = null;
+
+                    try {
+                        addresses = geocoder.getFromLocationName(a, 1);
+                    } catch (IOException e) {}
+
+                    if (addresses != null && !addresses.isEmpty()) {
+                        toBeCopied.add(new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude()));
+                        Log.i("MARKERS","ADDING TO LIST");
+                    }
+
+                }
+                markerForTraffic = new ArrayList<>(toBeCopied);
+                isCopyReady = true;
+
+            }else{
+                Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
+            }
+            return markerForTraffic;
+        }
+
+        @Override
+        protected void onPostExecute(List<LatLng> list){
+            for(LatLng latLng: list){
+                mMap.addMarker(new MarkerOptions().position(latLng));
+            }
+        }
     }
 
 

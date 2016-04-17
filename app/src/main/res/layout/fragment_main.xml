@@ -4,15 +4,5 @@
              android:layout_height="match_parent">
 
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxWidth="45dp"
-        android:maxHeight="45dp"
-        android:id="@+id/searchDirections"
-        android:layout_gravity="left|top"
-        android:scaleType="center"
-        android:adjustViewBounds="true"
-        android:layout_centerHorizontal="true"
-        />
+
 </FrameLayout>
