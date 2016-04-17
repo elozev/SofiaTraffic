@@ -18,6 +18,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isSearchButtonOnMap = true;
     private Button mSpeedButton;
     private Button mClearRouteButton;
+    private Button mStartNavigationButton;
 
 
     @Override
@@ -90,10 +92,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         mSpeedButton = (Button) findViewById(R.id.speedometerButton);
         mClearRouteButton = (Button) findViewById(R.id.clear_route);
         mSearchButton = (Button) findViewById(R.id.searchButton);
-
+        mStartNavigationButton = (Button) findViewById(R.id.startNavigationButton);
 
         if (!isGetDirectionsClicked) {
             mClearRouteButton.getBackground().setAlpha(100);
@@ -124,6 +127,16 @@ public class MainActivity extends AppCompatActivity
 
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
+
+        mStartNavigationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=Taronga+Zoo,+Sydney+Australia");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                //mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
 
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -426,6 +439,17 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id[0] == R.id.list_traffic_zones) {
 
+            if (mMapFragment.isAdded()) {
+                sFm.beginTransaction().hide(mMapFragment).commit();
+            }
+
+            setContentView(R.layout.fragment_import);
+
+            fragmentTransaction.add(R.id.fragment_import, importFragment);
+            fragmentTransaction.show(importFragment).commit();
+
+
+
         } else if (id[0] == R.id.search_places) {
             if (mMapFragment.isAdded()) {
                 sFm.beginTransaction().hide(mMapFragment).commit();
@@ -571,6 +595,7 @@ public class MainActivity extends AppCompatActivity
 
         for (LatLng latLng : markerForTraffic) {
             mMap.addMarker(new MarkerOptions().position(latLng));
+            Log.i("AddingMarkers","++++++");
         }
 
         if (isGetDirectionsClicked == true && addToMapPolyline != null) {
