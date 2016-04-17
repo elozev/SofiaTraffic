@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import emillozev.sofiatraffic.UI.DirectionsJSONParser;
-
 public class DrawRoute {
     private ArrayList<LatLng> markerPoints;
     private PolylineOptions linesOptions;

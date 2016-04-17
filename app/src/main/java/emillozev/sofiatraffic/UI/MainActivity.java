@@ -320,44 +320,6 @@ public class MainActivity extends AppCompatActivity
                 mClearRouteButton.getBackground().setAlpha(0);
             }
         });
-//
-//        AsyncTask.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                String []textSite = parsingTheSite();
-//
-//                if(textSite != null) {
-//                    List<LatLng> toBeCopied = new ArrayList<>();
-//
-//                    for (String a : textFromSite) {
-//
-//                        Geocoder geocoder = new Geocoder(MainActivity.this);
-//                        List<Address> addresses = null;
-//
-//                        try {
-//                            addresses = geocoder.getFromLocationName(a, 1);
-//                        } catch (IOException e) {}
-//
-//                        if (addresses != null && !addresses.isEmpty()) {
-//                            toBeCopied.add(new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude()));
-//                            Log.i("MARKERS","ADDING TO LIST");
-//                        }
-//
-//                    }
-//                    markerForTraffic = new ArrayList<>(toBeCopied);
-//                    isCopyReady = true;
-//
-//                }else{
-//                    Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
-//                }
-//
-//            }
-//        });
-//
-//
-//        if(isCopyReady){
-//            addMarkers();
-//        }
 
         GeoCoderIsShit geoCoderIsShit = new GeoCoderIsShit();
         geoCoderIsShit.execute("ape");
@@ -393,12 +355,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         return textFromSite;
-    }
-    public void addMarkers(){
-        for(LatLng latLng: markerForTraffic){
-            mMap.addMarker(new MarkerOptions().position(latLng));
-            Log.i("ADDINGTOMAP",latLng + "");
-        }
     }
 
     @Override
@@ -566,64 +522,6 @@ public class MainActivity extends AppCompatActivity
                 return;
             }
         }
-
-
-//        this.mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//
-//            @Override
-//            public void onMapClick(LatLng point) {
-//
-//                // Already 10 locations with 8 waypoints and 1 start location and 1 end location.
-//                // Upto 8 waypoints are allowed in a query for non-business users
-//                if (markerPoints.size() >= 10) {
-//                    return;
-//                }
-//
-//                // Adding new item to the ArrayList
-//                //markerPoints.add(point);
-//                mRoute.addMarkerToList(point);
-//
-//                // Creating MarkerOptions
-//                MarkerOptions options = new MarkerOptions();
-//
-//                // Setting the position of the marker
-//                options.position(point);
-//
-//                /**
-//                 * For the start location, the color of marker is GREEN and
-//                 * for the end location, the color of marker is RED and
-//                 * for the rest of markers, the color is AZURE
-//                 */
-//                if (mRoute.getMarkerPointsSize() == 1) {
-//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-//                } else if (mRoute.getMarkerPointsSize() == 2) {
-//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-//                } else {
-//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-//                }
-//
-//                // Add new marker to the Google Map Android API V2
-//                mMap.addMarker(options);
-//            }
-//        });
-//
-//        this.mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-//
-//            @Override
-//            public void onMapLongClick(LatLng point) {
-//                //mMap.clear();
-//                markerPoints.clear();
-//                mRoute.clearAll();
-//            }
-//        });
-
-
-
-        for (LatLng latLng : markerForTraffic) {
-
-            Log.i("AddingMarkers","++++++");
-        }
-
 
         if (isGetDirectionsClicked == true && addToMapPolyline != null) {
             mMap.addPolyline(addToMapPolyline);
