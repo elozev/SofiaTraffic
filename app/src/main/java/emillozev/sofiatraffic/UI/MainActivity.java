@@ -38,9 +38,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -55,12 +59,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
@@ -68,7 +72,6 @@ import emillozev.sofiatraffic.UI.Fragments.ImportFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener{
-
     private static final int REQUEST_PLACE_PICKER = 23;
     public SupportMapFragment mMapFragment;
     private GoogleMap mMap;
@@ -90,113 +93,13 @@ public class MainActivity extends AppCompatActivity
     private Button mStartNavigationButton;
     public boolean isCopyReady = false;
 
-    private CheckBox chkIos, chkAndroid, chkWindows;
+    private RadioButton checkWalking, checkCar, checkBus;
     private Button btnDisplay;
-
-
-    public void addListenerOnChkIos() {
-
-        chkIos = (CheckBox) findViewById(R.id.Walking);
-        chkAndroid = (CheckBox) findViewById(R.id.Car);
-        chkWindows = (CheckBox) findViewById(R.id.Bus);
-
-        chkAndroid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-               if (chkAndroid.isChecked()){
-                   chkIos.setChecked(false);
-                   chkWindows.setChecked(false);
-               }
-            }
-        });
-
-        chkWindows.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (chkWindows.isChecked()){
-                    chkIos.setChecked(false);
-                    chkAndroid.setChecked(false);
-                }
-            }
-        });
-
-        chkIos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (chkIos.isChecked()) {
-                    chkAndroid.setChecked(false);
-                    chkWindows.setChecked(false);
-                }
-            }
-        });
-
-
-        chkIos.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //is chkIos checked?
-                if (chkIos.isChecked()){
-                    Toast.makeText(MainActivity.this,
-                            "Walking", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
-        chkAndroid.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //is chkIos checked?
-                if (((CheckBox) v).isChecked()) {
-                    Toast.makeText(MainActivity.this,
-                            "Car", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
-        chkWindows.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //is chkIos checked?
-                if (((CheckBox) v).isChecked()) {
-                    Toast.makeText(MainActivity.this,
-                            "Bus", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
-    }
-
-    public void addListenerOnButton() {
-
-        chkIos = (CheckBox) findViewById(R.id.Car);
-        chkAndroid = (CheckBox) findViewById(R.id.Walking);
-        chkWindows = (CheckBox) findViewById(R.id.Bus);
-        btnDisplay = (Button) findViewById(R.id.startNavigationButton);
-
-        btnDisplay.setOnClickListener(new View.OnClickListener() {
-
-            //Run when button is clicked
-            @Override
-            public void onClick(View v) {
-
-                StringBuffer result = new StringBuffer();
-                result.append("IPhone check : ").append(chkIos.isChecked());
-                result.append("\nAndroid check : ").append(chkAndroid.isChecked());
-                result.append("\nWindows Mobile check :").append(chkWindows.isChecked());
-
-                Toast.makeText(MainActivity.this, result.toString(),
-                        Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-    }
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,7 +163,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-                Uri gmmIntentUri = Uri.parse("google.navigation:"+ "w" + "=" + addressDest.latitude + "," + addressDest.longitude);
+                Uri gmmIntentUri = Uri.parse("google.navigation:" + "w" + "=" + addressDest.latitude + "," + addressDest.longitude);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);
@@ -347,7 +250,6 @@ public class MainActivity extends AppCompatActivity
             }
 
         });
-
 
 
         getDirectionsButton.setOnClickListener(new View.OnClickListener() {
@@ -451,10 +353,10 @@ public class MainActivity extends AppCompatActivity
         GeoCoderIsShit geoCoderIsShit = new GeoCoderIsShit();
         geoCoderIsShit.execute("ape");
 
-        addListenerOnChkIos();
-        addListenerOnButton();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
 
 
     public String[] parsingTheSite() {
@@ -463,7 +365,7 @@ public class MainActivity extends AppCompatActivity
         Thread downloadThread = new Thread(new Runnable() {
 
             public void run() {
-                org.jsoup.nodes.Document doc = null;
+                Document doc = null;
 
                 try {
                     doc = Jsoup.connect("http://tix.bg/bg/Sofia/").get();
@@ -602,7 +504,6 @@ public class MainActivity extends AppCompatActivity
             });
 
 
-
         } else if (id[0] == R.id.nav_tools) {
 
         } else if (id[0] == R.id.nav_share) {
@@ -711,7 +612,7 @@ public class MainActivity extends AppCompatActivity
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if(!(mobile.isConnected()) && !(wifi.isConnected())) {
+        if (!(mobile.isConnected()) && !(wifi.isConnected())) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage("Please turn on Mobile data or Wi-Fi!");
             dialog.setNeutralButton(this.getResources().getString(R.string.mobile_data_settings),
@@ -847,6 +748,47 @@ public class MainActivity extends AppCompatActivity
         Log.d("Latitude", "status");
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://emillozev.sofiatraffic.UI/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://emillozev.sofiatraffic.UI/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
+
+
 //    @Override
 //    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 //        if(isChecked){
@@ -857,12 +799,12 @@ public class MainActivity extends AppCompatActivity
 //        }
 //    }
 
-    public class GeoCoderIsShit extends AsyncTask<String,Integer,List<LatLng>>{
+    public class GeoCoderIsShit extends AsyncTask<String, Integer, List<LatLng>> {
         @Override
         protected List<LatLng> doInBackground(String... params) {
-            String []textSite = parsingTheSite();
+            String[] textSite = parsingTheSite();
 
-            if(textSite != null) {
+            if (textSite != null) {
                 List<LatLng> toBeCopied = new ArrayList<>();
 
                 for (String a : textSite) {
@@ -872,26 +814,27 @@ public class MainActivity extends AppCompatActivity
 
                     try {
                         addresses = geocoder.getFromLocationName(a, 1);
-                    } catch (IOException e) {}
+                    } catch (IOException e) {
+                    }
 
                     if (addresses != null && !addresses.isEmpty()) {
                         toBeCopied.add(new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude()));
-                        Log.i("MARKERS","ADDING TO LIST");
+                        Log.i("MARKERS", "ADDING TO LIST");
                     }
 
                 }
                 markerForTraffic = new ArrayList<>(toBeCopied);
                 isCopyReady = true;
 
-            }else{
+            } else {
                 Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
             }
             return markerForTraffic;
         }
 
         @Override
-        protected void onPostExecute(List<LatLng> list){
-            for(LatLng latLng: list){
+        protected void onPostExecute(List<LatLng> list) {
+            for (LatLng latLng : list) {
                 mMap.addMarker(new MarkerOptions().position(latLng));
             }
         }
