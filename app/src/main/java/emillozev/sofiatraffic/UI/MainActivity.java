@@ -37,6 +37,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -65,7 +66,7 @@ import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
 import emillozev.sofiatraffic.UI.Fragments.ImportFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener, CompoundButton.OnCheckedChangeListener {
 
     private static final int REQUEST_PLACE_PICKER = 23;
     public SupportMapFragment mMapFragment;
@@ -90,6 +91,9 @@ public class MainActivity extends AppCompatActivity
 
 
     public void onChechBoxClicked(View view){
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.Walking);
+        checkBox.setOnCheckedChangeListener(this);
+
         boolean checked = ((CheckBox) view).isChecked();
 
         switch(view.getId()){
@@ -765,6 +769,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onProviderDisabled(String provider) {
         Log.d("Latitude", "status");
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(isChecked){
+            Log.d("CheckBox", "Tick the box");
+        }
+        else{
+            Log.d("CheckBox", "Untick the box");
+        }
     }
 
     public class GeoCoderIsShit extends AsyncTask<String,Integer,List<LatLng>>{
