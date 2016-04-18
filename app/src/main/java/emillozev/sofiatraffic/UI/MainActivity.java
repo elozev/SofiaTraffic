@@ -66,7 +66,7 @@ import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
 import emillozev.sofiatraffic.UI.Fragments.ImportFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener, CompoundButton.OnCheckedChangeListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener{
 
     private static final int REQUEST_PLACE_PICKER = 23;
     public SupportMapFragment mMapFragment;
@@ -89,40 +89,119 @@ public class MainActivity extends AppCompatActivity
     private Button mStartNavigationButton;
     public boolean isCopyReady = false;
 
+    private CheckBox chkIos, chkAndroid, chkWindows;
+    private Button btnDisplay;
 
-    public void onChechBoxClicked(View view){
-        CheckBox checkBox = (CheckBox) view.findViewById(R.id.Walking);
-        checkBox.setOnCheckedChangeListener(this);
 
-        boolean checked = ((CheckBox) view).isChecked();
+    public void addListenerOnChkIos() {
 
-        switch(view.getId()){
-            case R.id.Walking:
-                if (checked){
+        chkIos = (CheckBox) findViewById(R.id.Walking);
+        chkAndroid = (CheckBox) findViewById(R.id.Car);
+        chkWindows = (CheckBox) findViewById(R.id.Bus);
 
+        chkIos.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(MainActivity.this,
+                            "Walking", Toast.LENGTH_LONG).show();
                 }
-                else{
 
-                }
-                break;
-            case R.id.Car:
-                if (checked){
+            }
+        });
 
-                }
-                else{
+        chkAndroid.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(MainActivity.this,
+                            "Car", Toast.LENGTH_LONG).show();
                 }
-                break;
-            case R.id.Bus:
-                if (checked){
 
-                }
-                else{
+            }
+        });
 
+        chkWindows.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //is chkIos checked?
+                if (((CheckBox) v).isChecked()) {
+                    Toast.makeText(MainActivity.this,
+                            "Bus", Toast.LENGTH_LONG).show();
                 }
-                break;
-        }
+
+            }
+        });
+
     }
+
+    public void addListenerOnButton() {
+
+        chkIos = (CheckBox) findViewById(R.id.Car);
+        chkAndroid = (CheckBox) findViewById(R.id.Walking);
+        chkWindows = (CheckBox) findViewById(R.id.Bus);
+        btnDisplay = (Button) findViewById(R.id.startNavigationButton);
+
+        btnDisplay.setOnClickListener(new View.OnClickListener() {
+
+            //Run when button is clicked
+            @Override
+            public void onClick(View v) {
+
+                StringBuffer result = new StringBuffer();
+                result.append("IPhone check : ").append(chkIos.isChecked());
+                result.append("\nAndroid check : ").append(chkAndroid.isChecked());
+                result.append("\nWindows Mobile check :").append(chkWindows.isChecked());
+
+                Toast.makeText(MainActivity.this, result.toString(),
+                        Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+
+
+//
+//    public void onCheckBoxClicked(View view){
+//        CheckBox checkBoxWalking = (CheckBox) findViewById(R.id.Walking);
+//        CheckBox checkBoxCar = (CheckBox) findViewById(R.id.Car);
+//        CheckBox checkBoxTransport = (CheckBox) findViewById(R.id.Bus);
+//        checkBox.setOnCheckedChangeListener(this);
+//
+//        boolean checked = ((CheckBox) view).isChecked();
+//
+//        switch(view.getId()){
+//            case R.id.Walking:
+//                if (checked){
+//                    Log.i("CHECKBOX","3");
+//                }
+//                else{
+//                    Log.i("CHECKBOX","3");
+//                }
+//                break;
+//            case R.id.Car:
+//                if (checked){
+//                    Log.i("CHECKBOX","3");
+//                }
+//                else{
+//                    Log.i("CHECKBOX","3");
+//                }
+//                break;
+//            case R.id.Bus:
+//                if (checked){
+//                    Log.i("CHECKBOX","3");
+//                }else{
+//                    Log.i("CHECKBOX","3");
+//                }
+//                break;
+//        }
+//    }
 
 //    final CheckBox checkbox = (CheckBox) findViewById(R.id.Walking);
 
@@ -378,6 +457,9 @@ public class MainActivity extends AppCompatActivity
 
         GeoCoderIsShit geoCoderIsShit = new GeoCoderIsShit();
         geoCoderIsShit.execute("ape");
+
+        addListenerOnChkIos();
+        addListenerOnButton();
     }
 
 
@@ -475,16 +557,16 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id[0] == R.id.list_traffic_zones) {
 
-            if (mMapFragment.isAdded()) {
-                sFm.beginTransaction().hide(mMapFragment).commit();
-            }
-
-            setContentView(R.layout.fragment_import);
-
-            fragmentTransaction.add(R.id.fragment_import, importFragment);
-            fragmentTransaction.show(importFragment).commit();
-
-
+//            if (mMapFragment.isAdded()) {
+//                sFm.beginTransaction().hide(mMapFragment).commit();
+//            }
+//
+//            setContentView(R.layout.fragment_import);
+//
+//            fragmentTransaction.add(R.id.fragment_import, importFragment);
+//            fragmentTransaction.show(importFragment).commit();
+//
+//
 
         } else if (id[0] == R.id.search_places) {
             if (mMapFragment.isAdded()) {
@@ -525,6 +607,7 @@ public class MainActivity extends AppCompatActivity
                     Log.i("AUTO COMPLETE", "An error occurred: " + status);
                 }
             });
+
 
 
         } else if (id[0] == R.id.nav_tools) {
@@ -771,15 +854,15 @@ public class MainActivity extends AppCompatActivity
         Log.d("Latitude", "status");
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if(isChecked){
-            Log.d("CheckBox", "Tick the box");
-        }
-        else{
-            Log.d("CheckBox", "Untick the box");
-        }
-    }
+//    @Override
+//    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//        if(isChecked){
+//            Log.d("CheckBox", "Tick the box");
+//        }
+//        else{
+//            Log.d("CheckBox", "Untick the box");
+//        }
+//    }
 
     public class GeoCoderIsShit extends AsyncTask<String,Integer,List<LatLng>>{
         @Override
