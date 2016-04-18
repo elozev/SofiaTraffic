@@ -38,6 +38,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -99,12 +100,43 @@ public class MainActivity extends AppCompatActivity
         chkAndroid = (CheckBox) findViewById(R.id.Car);
         chkWindows = (CheckBox) findViewById(R.id.Bus);
 
+        chkAndroid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               if (chkAndroid.isChecked()){
+                   chkIos.setChecked(false);
+                   chkWindows.setChecked(false);
+               }
+            }
+        });
+
+        chkWindows.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (chkWindows.isChecked()){
+                    chkIos.setChecked(false);
+                    chkAndroid.setChecked(false);
+                }
+            }
+        });
+
+        chkIos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (chkIos.isChecked()) {
+                    chkAndroid.setChecked(false);
+                    chkWindows.setChecked(false);
+                }
+            }
+        });
+
+
         chkIos.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 //is chkIos checked?
-                if (((CheckBox) v).isChecked()) {
+                if (chkIos.isChecked()){
                     Toast.makeText(MainActivity.this,
                             "Walking", Toast.LENGTH_LONG).show();
                 }
@@ -165,45 +197,6 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
-
-
-//
-//    public void onCheckBoxClicked(View view){
-//        CheckBox checkBoxWalking = (CheckBox) findViewById(R.id.Walking);
-//        CheckBox checkBoxCar = (CheckBox) findViewById(R.id.Car);
-//        CheckBox checkBoxTransport = (CheckBox) findViewById(R.id.Bus);
-//        checkBox.setOnCheckedChangeListener(this);
-//
-//        boolean checked = ((CheckBox) view).isChecked();
-//
-//        switch(view.getId()){
-//            case R.id.Walking:
-//                if (checked){
-//                    Log.i("CHECKBOX","3");
-//                }
-//                else{
-//                    Log.i("CHECKBOX","3");
-//                }
-//                break;
-//            case R.id.Car:
-//                if (checked){
-//                    Log.i("CHECKBOX","3");
-//                }
-//                else{
-//                    Log.i("CHECKBOX","3");
-//                }
-//                break;
-//            case R.id.Bus:
-//                if (checked){
-//                    Log.i("CHECKBOX","3");
-//                }else{
-//                    Log.i("CHECKBOX","3");
-//                }
-//                break;
-//        }
-//    }
-
-//    final CheckBox checkbox = (CheckBox) findViewById(R.id.Walking);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
