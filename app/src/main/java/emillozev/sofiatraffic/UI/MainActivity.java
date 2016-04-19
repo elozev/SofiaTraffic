@@ -343,18 +343,23 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 if(addressDest != null && addressOrigin == null) {
-                    int selectedId = radioGroup.getCheckedRadioButtonId();
-                    radioB = (RadioButton) findViewById(selectedId);
-                    Toast.makeText(MainActivity.this, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
                     String modeForNavigation;
-                    if (radioB.getText().toString() == "Car") {
+                    int selectedId = radioGroup.getCheckedRadioButtonId();
+                    if(selectedId == -1){
                         modeForNavigation = "d";
-                    } else if (radioB.getText().toString() == "Walking") {
-                        modeForNavigation = "w";
-                    } else if (radioB.getText().toString() == "Bicycle") {
-                        modeForNavigation = "b";
                     } else {
-                        modeForNavigation = "d";
+                        Log.i("SELECTED ID", "" + selectedId);
+                        radioB = (RadioButton) findViewById(selectedId);
+                        Toast.makeText(MainActivity.this, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
+                        if (radioB.getText().toString() == "Car") {
+                            modeForNavigation = "d";
+                        } else if (radioB.getText().toString() == "Walking") {
+                            modeForNavigation = "w";
+                        } else if (radioB.getText().toString() == "Bicycle") {
+                            modeForNavigation = "b";
+                        } else {
+                            modeForNavigation = "d";
+                        }
                     }
 
                     Uri gmmIntentUri = Uri.parse("google.navigation:" + modeForNavigation + "=" + addressDest.latitude + "," + addressDest.longitude);
