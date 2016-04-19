@@ -93,13 +93,6 @@
 
         </RadioGroup>
 
-        <Button
-            android:layout_width="104dp"
-            android:layout_height="wrap_content"
-            android:text="Submit"
-            android:id="@+id/buttonSubmit"
-            android:layout_gravity="center_horizontal|bottom" />
-
     </FrameLayout>
 
     <FrameLayout
