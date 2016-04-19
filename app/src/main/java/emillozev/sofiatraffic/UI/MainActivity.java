@@ -464,7 +464,7 @@ public class MainActivity extends AppCompatActivity
                 isGetDirectionsClicked = false;
                 addToMapPolyline = null;
             }
-
+            mSearchButton.setText("Search");
         } else if (id[0] == R.id.list_traffic_zones) {
 
             if (mMapFragment.isAdded()) {
