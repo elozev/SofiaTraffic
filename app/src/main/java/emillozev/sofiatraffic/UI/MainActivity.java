@@ -362,7 +362,7 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
 
-                    Uri gmmIntentUri = Uri.parse("google.navigation:" + modeForNavigation + "=" + addressDest.latitude + "," + addressDest.longitude);
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + addressDest.latitude + "," + addressDest.longitude + "&mode=" + modeForNavigation);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     startActivity(mapIntent);
