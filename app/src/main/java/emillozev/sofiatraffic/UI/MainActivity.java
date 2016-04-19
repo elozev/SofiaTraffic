@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity
         mSpeedButton = (Button) findViewById(R.id.speedometerButton);
         mClearRouteButton = (Button) findViewById(R.id.clear_route);
         mSearchButton = (Button) findViewById(R.id.searchButton);
-        mStartNavigationButton = (Button) findViewById(R.id.startNavigationButton);
+
 
         if (!isGetDirectionsClicked) {
             mClearRouteButton.getBackground().setAlpha(100);
@@ -134,33 +134,6 @@ public class MainActivity extends AppCompatActivity
 
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
-
-        mStartNavigationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
-                        getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
-
-                autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                    @Override
-                    public void onPlaceSelected(Place place) {
-                        addressDest = place.getLatLng();
-                    }
-
-                    @Override
-                    public void onError(Status status) {
-                        // TODO: Handle the error.
-                        Log.i("AUTO COMPLETE", "An error occurred: " + status);
-                    }
-                });
-
-                Uri gmmIntentUri = Uri.parse("google.navigation:"+ "w" + "=" + addressDest.latitude + "," + addressDest.longitude);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
-            }
-        });
 
         mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -348,14 +321,49 @@ public class MainActivity extends AppCompatActivity
 
     public void onClickListenerButton(){
         radioGroup = (RadioGroup)findViewById(R.id.rg_navigation_method);
-        button_sbm =(Button)findViewById(R.id.buttonSubmit);
+        mStartNavigationButton = (Button) findViewById(R.id.startNavigationButton);
 
-        button_sbm.setOnClickListener(new View.OnClickListener() {
+        PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+
+        autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                addressDest = place.getLatLng();
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("AUTO COMPLETE", "An error occurred: " + status);
+            }
+        });
+
+        mStartNavigationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                radioB = (RadioButton)findViewById(selectedId);
-                Toast.makeText(MainActivity.this, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
+                if(addressDest != null && addressOrigin == null) {
+                    int selectedId = radioGroup.getCheckedRadioButtonId();
+                    radioB = (RadioButton) findViewById(selectedId);
+                    Toast.makeText(MainActivity.this, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
+                    String modeForNavigation;
+                    if (radioB.getText().toString() == "Car") {
+                        modeForNavigation = "d";
+                    } else if (radioB.getText().toString() == "Walking") {
+                        modeForNavigation = "w";
+                    } else if (radioB.getText().toString() == "Bicycle") {
+                        modeForNavigation = "b";
+                    } else {
+                        modeForNavigation = "d";
+                    }
+
+                    Uri gmmIntentUri = Uri.parse("google.navigation:" + modeForNavigation + "=" + addressDest.latitude + "," + addressDest.longitude);
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                }else {
+                    Toast.makeText(MainActivity.this, "Fill in only \"To:\"! The start point is your location! ", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
