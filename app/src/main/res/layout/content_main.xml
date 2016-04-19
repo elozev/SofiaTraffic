@@ -100,12 +100,38 @@
             android:layout_gravity="center|bottom"
             android:background="@android:color/transparent"/>
 
-        <CheckBox
+        <RadioGroup
             android:layout_width="wrap_content"
+            android:layout_height="166dp"
+            android:layout_gravity="left|bottom"
+            android:id="@+id/rg_navigation_method">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Walking"
+                android:id="@+id/walking" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bus"
+                android:id="@+id/bus" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Car"
+                android:id="@+id/car" />
+
+        </RadioGroup>
+
+        <Button
+            android:layout_width="104dp"
             android:layout_height="wrap_content"
-            android:text="New CheckBox"
-            android:id="@+id/checkBox"
-            android:layout_gravity="left|bottom" />
+            android:text="Submit"
+            android:id="@+id/buttonSubmit"
+            android:layout_gravity="center_horizontal|bottom" />
 
 
     </FrameLayout>

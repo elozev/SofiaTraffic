@@ -36,6 +36,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -86,7 +88,9 @@ public class MainActivity extends AppCompatActivity
     private Button mClearRouteButton;
     private Button mStartNavigationButton;
     public boolean isCopyReady = false;
-
+    private static RadioGroup radioGroup;
+    private static RadioButton radioB;
+    private static Button button_sbm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        onClickListenerButton();
 
         mSpeedButton = (Button) findViewById(R.id.speedometerButton);
         mClearRouteButton = (Button) findViewById(R.id.clear_route);
@@ -239,7 +244,6 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-
         getDirectionsButton.setOnClickListener(new View.OnClickListener() {
 
 
@@ -342,6 +346,19 @@ public class MainActivity extends AppCompatActivity
         geoCoderIsShit.execute("ape");
     }
 
+    public void onClickListenerButton(){
+        radioGroup = (RadioGroup)findViewById(R.id.rg_navigation_method);
+        button_sbm =(Button)findViewById(R.id.buttonSubmit);
+
+        button_sbm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                radioB = (RadioButton)findViewById(selectedId);
+                Toast.makeText(MainActivity.this, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
     public String[] parsingTheSite() {
