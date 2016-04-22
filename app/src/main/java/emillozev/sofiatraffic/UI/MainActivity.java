@@ -65,6 +65,7 @@ import java.util.Set;
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
 import emillozev.sofiatraffic.UI.Fragments.ImportFragment;
+import emillozev.sofiatraffic.UI.Fragments.NavigationFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener {
@@ -98,17 +99,17 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        onClickListenerButton();
+//        onClickListenerButton();
 
         mSpeedButton = (Button) findViewById(R.id.speedometerButton);
         mClearRouteButton = (Button) findViewById(R.id.clear_route);
         mSearchButton = (Button) findViewById(R.id.searchButton);
 
 
-        if (!isGetDirectionsClicked) {
-            mClearRouteButton.getBackground().setAlpha(100);
-            mClearRouteButton.setText("");
-        }
+//        if (!isGetDirectionsClicked) {
+//            mClearRouteButton.getBackground().setAlpha(100);
+//            mClearRouteButton.setText("");
+//        }
 
         mMapFragment = SupportMapFragment.newInstance();
         getDirectionsButton = (Button) findViewById(R.id.getDirectionsButton);
@@ -139,141 +140,141 @@ public class MainActivity extends AppCompatActivity
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
 
-        mSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (isSearchButtonOnMap == true) {
-
-                    isSearchButtonOnMap = false;
-                    mSpeedButton.setText("");
-
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    ImportFragment importFragment = new ImportFragment();
-
-                    if (mMapFragment.isAdded()) {
-//                        fm.beginTransaction().hide(mMapFragment).commit();
-                    }
-
-                    fragmentTransaction.add(R.id.content_frame, importFragment);
-                    fragmentTransaction.show(importFragment).commit();
-
-                    PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                            getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-                    autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                        @Override
-                        public void onPlaceSelected(Place place) {
-                            addressOrigin = place.getLatLng();
-                        }
-
-                        @Override
-                        public void onError(Status status) {
-                            // TODO: Handle the error.
-                            Log.i("AUTO COMPLETE", "An error occurred: " + status);
-                        }
-                    });
-
-                    PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
-                            getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
-
-                    autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                        @Override
-                        public void onPlaceSelected(Place place) {
-                            addressDest = place.getLatLng();
-                        }
-
-                        @Override
-                        public void onError(Status status) {
-                            // TODO: Handle the error.
-                            Log.i("AUTO COMPLETE", "An error occurred: " + status);
-                        }
-                    });
-
-                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-                        mMap.addPolyline(addToMapPolyline);
-                        isGetDirectionsClicked = false;
-                        addToMapPolyline = null;
-                    }
-
-
-                } else {
-                    mSearchButton.setText("Search");
-                    isSearchButtonOnMap = true;
-//                    //mSpeedButton.setText("-.-km/h");
+//        mSearchButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
 //
-//                    if (!mMapFragment.isAdded())
-//                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
-//                    else
-//                        fm.beginTransaction().show(mMapFragment).commit();
+//                if (isSearchButtonOnMap == true) {
+//
+//                    isSearchButtonOnMap = false;
+//                    mSpeedButton.setText("");
+//
+//                    FragmentManager fragmentManager = getFragmentManager();
+//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                    ImportFragment importFragment = new ImportFragment();
+//
+//                    if (mMapFragment.isAdded()) {
+////                        fm.beginTransaction().hide(mMapFragment).commit();
+//                    }
+//
+//                    fragmentTransaction.add(R.id.content_frame, importFragment);
+//                    fragmentTransaction.show(importFragment).commit();
+//
+//                    PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+//                            getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+//
+//                    autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+//                        @Override
+//                        public void onPlaceSelected(Place place) {
+//                            addressOrigin = place.getLatLng();
+//                        }
+//
+//                        @Override
+//                        public void onError(Status status) {
+//                            // TODO: Handle the error.
+//                            Log.i("AUTO COMPLETE", "An error occurred: " + status);
+//                        }
+//                    });
+//
+//                    PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
+//                            getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+//
+//                    autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+//                        @Override
+//                        public void onPlaceSelected(Place place) {
+//                            addressDest = place.getLatLng();
+//                        }
+//
+//                        @Override
+//                        public void onError(Status status) {
+//                            // TODO: Handle the error.
+//                            Log.i("AUTO COMPLETE", "An error occurred: " + status);
+//                        }
+//                    });
 //
 //                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
 //                        mMap.addPolyline(addToMapPolyline);
 //                        isGetDirectionsClicked = false;
 //                        addToMapPolyline = null;
 //                    }
-
-                }
-
-            }
-
-        });
-
-
-        getDirectionsButton.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View v) {
-
-
-                if (addressOrigin == null && addressDest == null) {
-                    Toast.makeText(MainActivity.this, "Please fill up both!", Toast.LENGTH_LONG).show();
-                } else {
-                    for (int i = 0; i < 2; i++) {
-                        MarkerOptions options = new MarkerOptions();
-                        if (i == 0) {
-                            options.position(addressOrigin);
-                        } else {
-                            options.position(addressDest);
-                        }
-
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-
-
-                        // Add new marker to the Google Map Android API V2
-
-                        mMap.addMarker(options);
-                    }
-
-
-                    mRoute.clearAll();
-                    mRoute.addMarkerToList(addressOrigin);
-                    mRoute.addMarkerToList(addressDest);
-                    // Getting URL to the Google Directions API
-                    String url = mRoute.getDirectionsUrl(addressOrigin, addressDest);
-                    Log.i("DIRECTIONS", "SOMETHING");
-                    mRoute.downloadTask(url);
-                    mMap.addPolyline(mRoute.getLinesOptions());
-
-                    addToMapPolyline = mRoute.getLinesOptions();
-                    isGetDirectionsClicked = true;
 //
-//                    if (!mMapFragment.isAdded())
-//                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
-//                    else
-//                        fm.beginTransaction().show(mMapFragment).commit();
+//
+//                } else {
+//                    mSearchButton.setText("Search");
+//                    isSearchButtonOnMap = true;
+////                    //mSpeedButton.setText("-.-km/h");
+////
+////                    if (!mMapFragment.isAdded())
+////                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
+////                    else
+////                        fm.beginTransaction().show(mMapFragment).commit();
+////
+////                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+////                        mMap.addPolyline(addToMapPolyline);
+////                        isGetDirectionsClicked = false;
+////                        addToMapPolyline = null;
+////                    }
+//
+//                }
+//
+//            }
+//
+//        });
+//
 
-                    mClearRouteButton.setText("Clear Route");
-                    mClearRouteButton.getBackground().setAlpha(64);
-
-                }
-                mMap.addPolyline(mRoute.getLinesOptions());
-                mSearchButton.setText("Search");
-                isSearchButtonOnMap = true;
-            }
-        });
+//        getDirectionsButton.setOnClickListener(new View.OnClickListener() {
+//
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//
+//                if (addressOrigin == null && addressDest == null) {
+//                    Toast.makeText(MainActivity.this, "Please fill up both!", Toast.LENGTH_LONG).show();
+//                } else {
+//                    for (int i = 0; i < 2; i++) {
+//                        MarkerOptions options = new MarkerOptions();
+//                        if (i == 0) {
+//                            options.position(addressOrigin);
+//                        } else {
+//                            options.position(addressDest);
+//                        }
+//
+//                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+//
+//
+//                        // Add new marker to the Google Map Android API V2
+//
+//                        mMap.addMarker(options);
+//                    }
+//
+//
+//                    mRoute.clearAll();
+//                    mRoute.addMarkerToList(addressOrigin);
+//                    mRoute.addMarkerToList(addressDest);
+//                    // Getting URL to the Google Directions API
+//                    String url = mRoute.getDirectionsUrl(addressOrigin, addressDest);
+//                    Log.i("DIRECTIONS", "SOMETHING");
+//                    mRoute.downloadTask(url);
+//                    mMap.addPolyline(mRoute.getLinesOptions());
+//
+//                    addToMapPolyline = mRoute.getLinesOptions();
+//                    isGetDirectionsClicked = true;
+////
+////                    if (!mMapFragment.isAdded())
+////                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
+////                    else
+////                        fm.beginTransaction().show(mMapFragment).commit();
+//
+//                    mClearRouteButton.setText("Clear Route");
+//                    mClearRouteButton.getBackground().setAlpha(64);
+//
+//                }
+//                mMap.addPolyline(mRoute.getLinesOptions());
+//                mSearchButton.setText("Search");
+//                isSearchButtonOnMap = true;
+//            }
+//        });
 
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -303,79 +304,79 @@ public class MainActivity extends AppCompatActivity
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); //the ints are getting how often get location info
 
 
-        mClearRouteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMap.clear();
-                markerPoints.clear();
-                mRoute.clearAll();
-
-                for (LatLng latLng : markerForTraffic) {
-                    mMap.addMarker(new MarkerOptions().position(latLng));
-                }
-
-                mClearRouteButton.setText("");
-                mClearRouteButton.getBackground().setAlpha(0);
-            }
-        });
+//        mClearRouteButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mMap.clear();
+//                markerPoints.clear();
+//                mRoute.clearAll();
+//
+//                for (LatLng latLng : markerForTraffic) {
+//                    mMap.addMarker(new MarkerOptions().position(latLng));
+//                }
+//
+//                mClearRouteButton.setText("");
+//                mClearRouteButton.getBackground().setAlpha(0);
+//            }
+//        });
 
         GeoCoderIsShit geoCoderIsShit = new GeoCoderIsShit();
         geoCoderIsShit.execute("ape");
     }
 
-    public void onClickListenerButton() {
-        radioGroup = (RadioGroup) findViewById(R.id.rg_navigation_method);
-        mStartNavigationButton = (Button) findViewById(R.id.startNavigationButton);
-
-        PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
-
-        autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                addressDest = place.getLatLng();
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i("AUTO COMPLETE", "An error occurred: " + status);
-            }
-        });
-
-        mStartNavigationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (addressDest != null && addressOrigin == null) {
-                    String modeForNavigation;
-                    int selectedId = radioGroup.getCheckedRadioButtonId();
-                    if (selectedId == -1) {
-                        modeForNavigation = "d";
-                    } else {
-                        Log.i("SELECTED ID", "" + selectedId);
-                        radioB = (RadioButton) findViewById(selectedId);
-                        Toast.makeText(MainActivity.this, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
-                        if (radioB.getText().toString() == "Car") {
-                            modeForNavigation = "d";
-                        } else if (radioB.getText().toString() == "Walking") {
-                            modeForNavigation = "w";
-                        } else if (radioB.getText().toString() == "Bicycle") {
-                            modeForNavigation = "b";
-                        } else {
-                            modeForNavigation = "d";
-                        }
-                    }
-
-                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + addressDest.latitude + "," + addressDest.longitude + "&mode=" + modeForNavigation);
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    startActivity(mapIntent);
-                } else {
-                    Toast.makeText(MainActivity.this, "Fill in only \"To:\"! The start point is your location! ", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
+//    public void onClickListenerButton() {
+//        radioGroup = (RadioGroup) findViewById(R.id.rg_navigation_method);
+//        mStartNavigationButton = (Button) findViewById(R.id.startNavigationButton);
+//
+//        PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
+//                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+//
+//        autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+//            @Override
+//            public void onPlaceSelected(Place place) {
+//                addressDest = place.getLatLng();
+//            }
+//
+//            @Override
+//            public void onError(Status status) {
+//                // TODO: Handle the error.
+//                Log.i("AUTO COMPLETE", "An error occurred: " + status);
+//            }
+//        });
+//
+//        mStartNavigationButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (addressDest != null && addressOrigin == null) {
+//                    String modeForNavigation;
+//                    int selectedId = radioGroup.getCheckedRadioButtonId();
+//                    if (selectedId == -1) {
+//                        modeForNavigation = "d";
+//                    } else {
+//                        Log.i("SELECTED ID", "" + selectedId);
+//                        radioB = (RadioButton) findViewById(selectedId);
+//                        Toast.makeText(MainActivity.this, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
+//                        if (radioB.getText().toString() == "Car") {
+//                            modeForNavigation = "d";
+//                        } else if (radioB.getText().toString() == "Walking") {
+//                            modeForNavigation = "w";
+//                        } else if (radioB.getText().toString() == "Bicycle") {
+//                            modeForNavigation = "b";
+//                        } else {
+//                            modeForNavigation = "d";
+//                        }
+//                    }
+//
+//                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + addressDest.latitude + "," + addressDest.longitude + "&mode=" + modeForNavigation);
+//                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+//                    mapIntent.setPackage("com.google.android.apps.maps");
+//                    startActivity(mapIntent);
+//                } else {
+//                    Toast.makeText(MainActivity.this, "Fill in only \"To:\"! The start point is your location! ", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//    }
 
 
     public String[] parsingTheSite() {
@@ -450,13 +451,14 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ImportFragment importFragment = new ImportFragment();
+        MapFragment mapFragment = new MapFragment();
 
 
         //  if (mMapFragment.isAdded())
         //    sFm.beginTransaction().hide(mMapFragment).commit();
 
         if (id[0] == R.id.map_menu) {
-            fm.beginTransaction().replace(R.id.main_fragment_for_replacement, new ImportFragment()).commit();
+            fm.beginTransaction().replace(R.id.main_fragment_for_replacement, mapFragment).commit();
             if (!mMapFragment.isAdded())
                 sFm.beginTransaction().add(R.id.main_fragment_for_replacement, mMapFragment).commit();
             else
@@ -468,14 +470,16 @@ public class MainActivity extends AppCompatActivity
                 isGetDirectionsClicked = false;
                 addToMapPolyline = null;
             }
-            mSearchButton.setText("Search");
+//            mSearchButton.setText("Search");
+
+
         } else if (id[0] == R.id.list_traffic_zones) {
 
-            if (mMapFragment.isAdded()) {
-                sFm.beginTransaction().hide(mMapFragment).commit();
-            }
+            //if (mMapFragment.isAdded()) {
+            sFm.beginTransaction().hide(mMapFragment).commit();
 
-            fragmentTransaction.add(R.id.fragment_import, importFragment);
+
+            fragmentTransaction.add(R.id.main_fragment_for_replacement, importFragment);
             fragmentTransaction.show(importFragment).commit();
 
 
@@ -483,41 +487,10 @@ public class MainActivity extends AppCompatActivity
             if (mMapFragment.isAdded()) {
                 sFm.beginTransaction().hide(mMapFragment).commit();
             }
+            NavigationFragment navigationFragment = new NavigationFragment();
 
-            fragmentTransaction.add(R.id.content_frame, importFragment);
+            fragmentTransaction.add(R.id.main_fragment_for_replacement, navigationFragment);
             fragmentTransaction.show(importFragment).commit();
-
-            PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                    getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                @Override
-                public void onPlaceSelected(Place place) {
-                    addressOrigin = place.getLatLng();
-                }
-
-                @Override
-                public void onError(Status status) {
-                    // TODO: Handle the error.
-                    Log.i("AUTO COMPLETE", "An error occurred: " + status);
-                }
-            });
-
-            PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
-                    getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
-
-            autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                @Override
-                public void onPlaceSelected(Place place) {
-                    addressDest = place.getLatLng();
-                }
-
-                @Override
-                public void onError(Status status) {
-                    // TODO: Handle the error.
-                    Log.i("AUTO COMPLETE", "An error occurred: " + status);
-                }
-            });
 
 
         } else if (id[0] == R.id.nav_tools) {
@@ -728,25 +701,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
 
-        if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-            mMap.addPolyline(addToMapPolyline);
-            isGetDirectionsClicked = false;
-            addToMapPolyline = null;
-        }
-
-        if (isSearchButtonOnMap == true) {
-            //isSearchButtonOnMap = false;
-            mSpeedButton.setText("");
-        } else {
-            float currentSpeed = location.getSpeed();
-            mSpeedButton.setText((double) Math.round(currentSpeed * (1000 / 60) * 100) / 100 + " km/h");
-        }
-
-        for (LatLng latLng : markerForTraffic) {
-            if (distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
-                sendNotifications();
-            }
-        }
+//        if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+//            mMap.addPolyline(addToMapPolyline);
+//            isGetDirectionsClicked = false;
+//            addToMapPolyline = null;
+//        }
+//
+//        if (isSearchButtonOnMap == true) {
+//            //isSearchButtonOnMap = false;
+////            mSpeedButton.setText("");
+//        } else {
+//            float currentSpeed = location.getSpeed();
+//            mSpeedButton.setText((double) Math.round(currentSpeed * (1000 / 60) * 100) / 100 + " km/h");
+//        }
+//
+//        for (LatLng latLng : markerForTraffic) {
+//            if (distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
+//                sendNotifications();
+//            }
+//        }
     }
 
     @Override
