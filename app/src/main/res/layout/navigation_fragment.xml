@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/content_frame">
+
+
+        <fragment
+            android:id="@+id/place_autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_marginTop="20dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="From:"
+            android:id="@+id/textViewFrom"
+            android:textSize="25sp"
+            android:background="#b0beb7b7"/>
+
+        <fragment
+            android:id="@+id/place_autocomplete_fragment2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_marginTop="110dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="To:"
+            android:id="@+id/textViewTo"
+            android:layout_marginTop="90sp"
+            android:textSize="25sp"
+            android:background="#b0beb7b7"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:padding="15dp"
+            android:text="Get Directions"
+            android:id="@+id/getDirectionsButton"
+            android:layout_gravity="center|left"
+            android:background="#ffffff"/>
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:padding="15dp"
+            android:text="Start Navigation"
+            android:id="@+id/startNavigationButton"
+            android:layout_gravity="center|right"
+            android:background="#ffffff"/>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="166dp"
+            android:layout_gravity="left|bottom"
+            android:id="@+id/rg_navigation_method">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Walking"
+                android:id="@+id/walking" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bicycle"
+                android:id="@+id/bus" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Car"
+                android:id="@+id/car" />
+
+        </RadioGroup>
+
+</FrameLayout>

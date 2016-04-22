@@ -46,6 +46,7 @@ import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -90,7 +91,6 @@ public class MainActivity extends AppCompatActivity
     public boolean isCopyReady = false;
     private static RadioGroup radioGroup;
     private static RadioButton radioB;
-    private static Button button_sbm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,13 +124,17 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        final android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        final FragmentManager fm = getFragmentManager();
+        final android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
+        //MapFragment mapFragment = new MapFragment();
 
-
+        fm.beginTransaction().replace(R.id.main_fragment_for_replacement, new MapFragment()).commit();
         if (!mMapFragment.isAdded())
-            fm.beginTransaction().add(R.id.map, mMapFragment).commit();
+            sFm.beginTransaction().add(R.id.main_fragment_for_replacement, mMapFragment).commit();
         else
-            fm.beginTransaction().show(mMapFragment).commit();
+            sFm.beginTransaction().show(mMapFragment).commit();
+
+
 
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
@@ -140,7 +144,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
 
                 if (isSearchButtonOnMap == true) {
-                    mSearchButton.setText("Back");
+
                     isSearchButtonOnMap = false;
                     mSpeedButton.setText("");
 
@@ -149,7 +153,7 @@ public class MainActivity extends AppCompatActivity
                     ImportFragment importFragment = new ImportFragment();
 
                     if (mMapFragment.isAdded()) {
-                        fm.beginTransaction().hide(mMapFragment).commit();
+//                        fm.beginTransaction().hide(mMapFragment).commit();
                     }
 
                     fragmentTransaction.add(R.id.content_frame, importFragment);
@@ -197,18 +201,18 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     mSearchButton.setText("Search");
                     isSearchButtonOnMap = true;
-                    //mSpeedButton.setText("-.-km/h");
-
-                    if (!mMapFragment.isAdded())
-                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
-                    else
-                        fm.beginTransaction().show(mMapFragment).commit();
-
-                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-                        mMap.addPolyline(addToMapPolyline);
-                        isGetDirectionsClicked = false;
-                        addToMapPolyline = null;
-                    }
+//                    //mSpeedButton.setText("-.-km/h");
+//
+//                    if (!mMapFragment.isAdded())
+//                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
+//                    else
+//                        fm.beginTransaction().show(mMapFragment).commit();
+//
+//                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+//                        mMap.addPolyline(addToMapPolyline);
+//                        isGetDirectionsClicked = false;
+//                        addToMapPolyline = null;
+//                    }
 
                 }
 
@@ -255,11 +259,11 @@ public class MainActivity extends AppCompatActivity
 
                     addToMapPolyline = mRoute.getLinesOptions();
                     isGetDirectionsClicked = true;
-
-                    if (!mMapFragment.isAdded())
-                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
-                    else
-                        fm.beginTransaction().show(mMapFragment).commit();
+//
+//                    if (!mMapFragment.isAdded())
+//                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
+//                    else
+//                        fm.beginTransaction().show(mMapFragment).commit();
 
                     mClearRouteButton.setText("Clear Route");
                     mClearRouteButton.getBackground().setAlpha(64);
@@ -319,8 +323,8 @@ public class MainActivity extends AppCompatActivity
         geoCoderIsShit.execute("ape");
     }
 
-    public void onClickListenerButton(){
-        radioGroup = (RadioGroup)findViewById(R.id.rg_navigation_method);
+    public void onClickListenerButton() {
+        radioGroup = (RadioGroup) findViewById(R.id.rg_navigation_method);
         mStartNavigationButton = (Button) findViewById(R.id.startNavigationButton);
 
         PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
@@ -342,10 +346,10 @@ public class MainActivity extends AppCompatActivity
         mStartNavigationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(addressDest != null && addressOrigin == null) {
+                if (addressDest != null && addressOrigin == null) {
                     String modeForNavigation;
                     int selectedId = radioGroup.getCheckedRadioButtonId();
-                    if(selectedId == -1){
+                    if (selectedId == -1) {
                         modeForNavigation = "d";
                     } else {
                         Log.i("SELECTED ID", "" + selectedId);
@@ -366,7 +370,7 @@ public class MainActivity extends AppCompatActivity
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
                     startActivity(mapIntent);
-                }else {
+                } else {
                     Toast.makeText(MainActivity.this, "Fill in only \"To:\"! The start point is your location! ", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -452,9 +456,9 @@ public class MainActivity extends AppCompatActivity
         //    sFm.beginTransaction().hide(mMapFragment).commit();
 
         if (id[0] == R.id.map_menu) {
-            fm.beginTransaction().replace(R.id.map, new ImportFragment()).commit();
+            fm.beginTransaction().replace(R.id.main_fragment_for_replacement, new ImportFragment()).commit();
             if (!mMapFragment.isAdded())
-                sFm.beginTransaction().add(R.id.map, mMapFragment).commit();
+                sFm.beginTransaction().add(R.id.main_fragment_for_replacement, mMapFragment).commit();
             else
                 sFm.beginTransaction().show(mMapFragment).commit();
 
@@ -471,11 +475,8 @@ public class MainActivity extends AppCompatActivity
                 sFm.beginTransaction().hide(mMapFragment).commit();
             }
 
-            setContentView(R.layout.fragment_import);
-
             fragmentTransaction.add(R.id.fragment_import, importFragment);
             fragmentTransaction.show(importFragment).commit();
-
 
 
         } else if (id[0] == R.id.search_places) {
@@ -627,7 +628,7 @@ public class MainActivity extends AppCompatActivity
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if(!(mobile.isConnected()) && !(wifi.isConnected())) {
+        if (!(mobile.isConnected()) && !(wifi.isConnected())) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage("Please turn on Mobile data or Wi-Fi!");
             dialog.setNeutralButton(this.getResources().getString(R.string.mobile_data_settings),
@@ -763,12 +764,12 @@ public class MainActivity extends AppCompatActivity
         Log.d("Latitude", "status");
     }
 
-    public class GeoCoderIsShit extends AsyncTask<String,Integer,List<LatLng>>{
+    public class GeoCoderIsShit extends AsyncTask<String, Integer, List<LatLng>> {
         @Override
         protected List<LatLng> doInBackground(String... params) {
-            String []textSite = parsingTheSite();
+            String[] textSite = parsingTheSite();
 
-            if(textSite != null) {
+            if (textSite != null) {
                 List<LatLng> toBeCopied = new ArrayList<>();
 
                 for (String a : textSite) {
@@ -778,26 +779,27 @@ public class MainActivity extends AppCompatActivity
 
                     try {
                         addresses = geocoder.getFromLocationName(a, 1);
-                    } catch (IOException e) {}
+                    } catch (IOException e) {
+                    }
 
                     if (addresses != null && !addresses.isEmpty()) {
                         toBeCopied.add(new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude()));
-                        Log.i("MARKERS","ADDING TO LIST");
+                        Log.i("MARKERS", "ADDING TO LIST");
                     }
 
                 }
                 markerForTraffic = new ArrayList<>(toBeCopied);
                 isCopyReady = true;
 
-            }else{
+            } else {
                 Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
             }
             return markerForTraffic;
         }
 
         @Override
-        protected void onPostExecute(List<LatLng> list){
-            for(LatLng latLng: list){
+        protected void onPostExecute(List<LatLng> list) {
+            for (LatLng latLng : list) {
                 mMap.addMarker(new MarkerOptions().position(latLng));
             }
         }
