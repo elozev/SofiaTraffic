@@ -2,6 +2,7 @@ package emillozev.sofiatraffic.UI;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.Notification;
@@ -65,6 +66,7 @@ import java.util.Set;
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
 import emillozev.sofiatraffic.UI.Fragments.ImportFragment;
+import emillozev.sofiatraffic.UI.Fragments.MainFragment;
 import emillozev.sofiatraffic.UI.Fragments.NavigationFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity
     public boolean isCopyReady = false;
     private static RadioGroup radioGroup;
     private static RadioButton radioB;
+    private MapFragment mFragmentMap = new MapFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,12 +132,11 @@ public class MainActivity extends AppCompatActivity
         final android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
         //MapFragment mapFragment = new MapFragment();
 
-        fm.beginTransaction().replace(R.id.main_fragment_for_replacement, new MapFragment()).commit();
+        fm.beginTransaction().replace(R.id.main_fragment_for_replacement, mFragmentMap).commit();
         if (!mMapFragment.isAdded())
             sFm.beginTransaction().add(R.id.main_fragment_for_replacement, mMapFragment).commit();
         else
             sFm.beginTransaction().show(mMapFragment).commit();
-
 
 
         mMapFragment.getMapAsync(this);
@@ -444,62 +446,35 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        final int[] id = {item.getItemId()};
-        final FragmentManager fm = getFragmentManager();
-        final android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
+        android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
 
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ImportFragment importFragment = new ImportFragment();
-        MapFragment mapFragment = new MapFragment();
+        Fragment fragment = null;
+        Class fragmentClass = null;
+        switch (item.getItemId()) {
+            case R.id.map_menu:
+                fragmentClass = ImportFragment.class;
+                break;
+            case R.id.list_traffic_zones:
+                fragmentClass = MainFragment.class;
+                break;
+            case R.id.search_places:
+                fragmentClass = NavigationFragment.class;
 
-
-        //  if (mMapFragment.isAdded())
-        //    sFm.beginTransaction().hide(mMapFragment).commit();
-
-        if (id[0] == R.id.map_menu) {
-            fm.beginTransaction().replace(R.id.main_fragment_for_replacement, mapFragment).commit();
-            if (!mMapFragment.isAdded())
-                sFm.beginTransaction().add(R.id.main_fragment_for_replacement, mMapFragment).commit();
-            else
-                sFm.beginTransaction().show(mMapFragment).commit();
-
-
-            if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-                mMap.addPolyline(addToMapPolyline);
-                isGetDirectionsClicked = false;
-                addToMapPolyline = null;
-            }
-//            mSearchButton.setText("Search");
-
-
-        } else if (id[0] == R.id.list_traffic_zones) {
-
-            //if (mMapFragment.isAdded()) {
-            sFm.beginTransaction().hide(mMapFragment).commit();
-
-
-            fragmentTransaction.add(R.id.main_fragment_for_replacement, importFragment);
-            fragmentTransaction.show(importFragment).commit();
-
-
-        } else if (id[0] == R.id.search_places) {
-            if (mMapFragment.isAdded()) {
-                sFm.beginTransaction().hide(mMapFragment).commit();
-            }
-            NavigationFragment navigationFragment = new NavigationFragment();
-
-            fragmentTransaction.add(R.id.main_fragment_for_replacement, navigationFragment);
-            fragmentTransaction.show(importFragment).commit();
-
-
-        } else if (id[0] == R.id.nav_tools) {
-
-        } else if (id[0] == R.id.nav_share) {
-
-        } else if (id[0] == R.id.nav_send) {
-
+                break;
+            default:
+                fragmentClass = ImportFragment.class;
         }
+
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {}
+
+
+        fm.beginTransaction().replace(R.id.main_fragment_for_replacement, fragment).commit();
+        item.setChecked(true);
+        setTitle(item.getTitle());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
