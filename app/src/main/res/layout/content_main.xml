@@ -12,6 +12,54 @@
     <FrameLayout
         android:id="@+id/main_fragment_for_replacement"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="68dp"
+            android:background="@android:color/transparent"
+            android:text="-.-km/h"
+            android:id="@+id/speedometerButton"
+            android:layout_gravity="left|bottom"
+            />
+
+        <Button
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchButton"
+            android:text="search"
+            android:layout_gravity="right|bottom"
+            android:background="@android:color/transparent"
+            android:allowUndo="true"/>
+
+        <Button
+            android:layout_width="135dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/clear_route"
+            android:text="Clear Route"
+            android:layout_gravity="center|bottom"
+            android:background="@android:color/transparent"/>
+
+        <LinearLayout
+            android:id="@+id/linlaHeaderProgress"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:weightSum="1">
+
+            <ProgressBar
+                android:id="@+id/pbHeaderProgress"
+                style="@android:style/Widget.ProgressBar.Small"
+                android:layout_width="196dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="28">
+            </ProgressBar>
+        </LinearLayout>
+
+    </FrameLayout>
 
 </RelativeLayout>

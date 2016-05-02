@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,6 +38,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -96,6 +99,8 @@ public class MainActivity extends AppCompatActivity
     private static RadioButton radioB;
     private MapFragment mFragmentMap = new MapFragment();
 
+    private ProgressBar mProgress = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,7 +135,6 @@ public class MainActivity extends AppCompatActivity
 
         final FragmentManager fm = getFragmentManager();
         final android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
-        //MapFragment mapFragment = new MapFragment();
 
         fm.beginTransaction().replace(R.id.main_fragment_for_replacement, mFragmentMap).commit();
         if (!mMapFragment.isAdded())
@@ -142,86 +146,44 @@ public class MainActivity extends AppCompatActivity
         mMapFragment.getMapAsync(this);
         mMap = mMapFragment.getMap();
 
-//        mSearchButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (isSearchButtonOnMap == true) {
-//
-//                    isSearchButtonOnMap = false;
-//                    mSpeedButton.setText("");
-//
-//                    FragmentManager fragmentManager = getFragmentManager();
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    ImportFragment importFragment = new ImportFragment();
-//
-//                    if (mMapFragment.isAdded()) {
-////                        fm.beginTransaction().hide(mMapFragment).commit();
-//                    }
-//
-//                    fragmentTransaction.add(R.id.content_frame, importFragment);
-//                    fragmentTransaction.show(importFragment).commit();
-//
-//                    PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-//                            getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-//
-//                    autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-//                        @Override
-//                        public void onPlaceSelected(Place place) {
-//                            addressOrigin = place.getLatLng();
-//                        }
-//
-//                        @Override
-//                        public void onError(Status status) {
-//                            // TODO: Handle the error.
-//                            Log.i("AUTO COMPLETE", "An error occurred: " + status);
-//                        }
-//                    });
-//
-//                    PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
-//                            getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
-//
-//                    autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-//                        @Override
-//                        public void onPlaceSelected(Place place) {
-//                            addressDest = place.getLatLng();
-//                        }
-//
-//                        @Override
-//                        public void onError(Status status) {
-//                            // TODO: Handle the error.
-//                            Log.i("AUTO COMPLETE", "An error occurred: " + status);
-//                        }
-//                    });
-//
-//                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-//                        mMap.addPolyline(addToMapPolyline);
-//                        isGetDirectionsClicked = false;
-//                        addToMapPolyline = null;
-//                    }
-//
-//
-//                } else {
-//                    mSearchButton.setText("Search");
-//                    isSearchButtonOnMap = true;
-////                    //mSpeedButton.setText("-.-km/h");
-////
-////                    if (!mMapFragment.isAdded())
-////                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
-////                    else
-////                        fm.beginTransaction().show(mMapFragment).commit();
-////
-////                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-////                        mMap.addPolyline(addToMapPolyline);
-////                        isGetDirectionsClicked = false;
-////                        addToMapPolyline = null;
-////                    }
-//
-//                }
-//
-//            }
-//
-//        });
+
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (isSearchButtonOnMap == true) {
+
+                    isSearchButtonOnMap = false;
+                    mSpeedButton.setText("");
+                    mSearchButton.setText("Back to map");
+
+                    addFragmentToDisplay(NavigationFragment.class);
+
+                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+                        mMap.addPolyline(addToMapPolyline);
+                        isGetDirectionsClicked = false;
+                        addToMapPolyline = null;
+                    }
+
+
+                } else {
+                    mSearchButton.setText("Search");
+                    isSearchButtonOnMap = true;
+
+                    addFragmentToDisplay(ImportFragment.class);
+
+
+                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+                        mMap.addPolyline(addToMapPolyline);
+                        isGetDirectionsClicked = false;
+                        addToMapPolyline = null;
+                    }
+
+                }
+
+            }
+
+        });
 //
 
 //        getDirectionsButton.setOnClickListener(new View.OnClickListener() {
@@ -326,6 +288,19 @@ public class MainActivity extends AppCompatActivity
         geoCoderIsShit.execute("ape");
     }
 
+    public void addFragmentToDisplay(Class fragmentClass){
+        final FragmentManager fm = getFragmentManager();
+        final android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
+
+        Fragment fragment = null;
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {}
+
+        fm.beginTransaction().replace(R.id.main_fragment_for_replacement, fragment).commit();
+
+    }
+
 //    public void onClickListenerButton() {
 //        radioGroup = (RadioGroup) findViewById(R.id.rg_navigation_method);
 //        mStartNavigationButton = (Button) findViewById(R.id.startNavigationButton);
@@ -341,7 +316,6 @@ public class MainActivity extends AppCompatActivity
 //
 //            @Override
 //            public void onError(Status status) {
-//                // TODO: Handle the error.
 //                Log.i("AUTO COMPLETE", "An error occurred: " + status);
 //            }
 //        });
@@ -450,7 +424,7 @@ public class MainActivity extends AppCompatActivity
         android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
 
         Fragment fragment = null;
-        Class fragmentClass = null;
+        Class fragmentClass;
         switch (item.getItemId()) {
             case R.id.map_menu:
                 fragmentClass = ImportFragment.class;
@@ -712,13 +686,22 @@ public class MainActivity extends AppCompatActivity
         Log.d("Latitude", "status");
     }
 
-    public class GeoCoderIsShit extends AsyncTask<String, Integer, List<LatLng>> {
+    private class GeoCoderIsShit extends AsyncTask<String, Integer, List<LatLng>> {
+        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Downloading needed data (Click on the screen to put this in background) ...");
+            this.dialog.show();
+        }
+
         @Override
         protected List<LatLng> doInBackground(String... params) {
             String[] textSite = parsingTheSite();
 
             if (textSite != null) {
                 List<LatLng> toBeCopied = new ArrayList<>();
+                final int PROGRESS = 0x1;
 
                 for (String a : textSite) {
 
@@ -728,13 +711,13 @@ public class MainActivity extends AppCompatActivity
                     try {
                         addresses = geocoder.getFromLocationName(a, 1);
                     } catch (IOException e) {
+                        Log.i("ERROR GEOCODER", "Error");
                     }
 
                     if (addresses != null && !addresses.isEmpty()) {
                         toBeCopied.add(new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude()));
                         Log.i("MARKERS", "ADDING TO LIST");
                     }
-
                 }
                 markerForTraffic = new ArrayList<>(toBeCopied);
                 isCopyReady = true;
@@ -747,6 +730,9 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(List<LatLng> list) {
+            if(dialog.isShowing()){
+                dialog.dismiss();
+            }
             for (LatLng latLng : list) {
                 mMap.addMarker(new MarkerOptions().position(latLng));
             }

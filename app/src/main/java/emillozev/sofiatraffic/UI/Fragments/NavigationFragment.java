@@ -29,36 +29,36 @@ public class NavigationFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View navigation_fragment = inflater.inflate(R.layout.navigation_fragment, container, false);
 
-
-        autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                LatLng originLat = place.getLatLng();
-            }
-
-            @Override
-            public void onError(Status status) {
-                Log.i("AUTO COMPLETE", "An error occurred: " + status);
-            }
-        });
-
-        autocompleteFragment2 = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
-
-        autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                LatLng dest = place.getLatLng();
-            }
-
-            @Override
-            public void onError(Status status) {
-                Log.i("AUTO COMPLETE", "An error occurred: " + status);
-            }
-        });
+//
+//        autocompleteFragment = (PlaceAutocompleteFragment)
+//                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+//
+//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+//            @Override
+//            public void onPlaceSelected(Place place) {
+//                LatLng originLat = place.getLatLng();
+//            }
+//
+//            @Override
+//            public void onError(Status status) {
+//                Log.i("AUTO COMPLETE", "An error occurred: " + status);
+//            }
+//        });
+//
+//        autocompleteFragment2 = (PlaceAutocompleteFragment)
+//                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+//
+//        autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+//            @Override
+//            public void onPlaceSelected(Place place) {
+//                LatLng dest = place.getLatLng();
+//            }
+//
+//            @Override
+//            public void onError(Status status) {
+//                Log.i("AUTO COMPLETE", "An error occurred: " + status);
+//            }
+//        });
 
         final MainActivity mainActivity = (MainActivity) getActivity();
 

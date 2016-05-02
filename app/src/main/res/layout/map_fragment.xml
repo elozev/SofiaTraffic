@@ -5,31 +5,6 @@
     android:layout_height="match_parent"
     android:id="@+id/map_fragment">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="68dp"
-        android:background="@android:color/transparent"
-        android:text="-.-km/h"
-        android:id="@+id/speedometerButton"
-        android:layout_gravity="left|bottom"
-        />
-
-    <Button
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchButton"
-        android:text="search"
-        android:layout_gravity="right|bottom"
-        android:background="@android:color/transparent"
-        android:allowUndo="true"/>
-
-    <Button
-        android:layout_width="135dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/clear_route"
-        android:text="Clear Route"
-        android:layout_gravity="center|bottom"
-        android:background="@android:color/transparent"/>
 
 
 </FrameLayout>
