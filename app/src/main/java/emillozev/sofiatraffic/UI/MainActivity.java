@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -20,7 +19,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -38,22 +36,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -64,13 +56,12 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import emillozev.sofiatraffic.R;
-import emillozev.sofiatraffic.UI.DirectionsAndNavigation.DrawRoute;
-import emillozev.sofiatraffic.UI.Fragments.ImportFragment;
-import emillozev.sofiatraffic.UI.Fragments.MainFragment;
-import emillozev.sofiatraffic.UI.Fragments.NavigationFragment;
+import emillozev.sofiatraffic.DirectionsAndNavigation.DrawRoute;
+import emillozev.sofiatraffic.Fragments.ImportFragment;
+import emillozev.sofiatraffic.Fragments.MainFragment;
+import emillozev.sofiatraffic.Fragments.NavigationFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener {
@@ -114,10 +105,10 @@ public class MainActivity extends AppCompatActivity
         mSearchButton = (Button) findViewById(R.id.searchButton);
 
 
-//        if (!isGetDirectionsClicked) {
-//            mClearRouteButton.getBackground().setAlpha(100);
-//            mClearRouteButton.setText("");
-//        }
+        if (!isGetDirectionsClicked) {
+            mClearRouteButton.getBackground().setAlpha(100);
+            mClearRouteButton.setText("");
+        }
 
         mMapFragment = SupportMapFragment.newInstance();
         getDirectionsButton = (Button) findViewById(R.id.getDirectionsButton);
@@ -151,7 +142,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-                if (isSearchButtonOnMap == true) {
+                if (isSearchButtonOnMap) {
 
                     isSearchButtonOnMap = false;
                     mSpeedButton.setText("");
@@ -159,7 +150,7 @@ public class MainActivity extends AppCompatActivity
 
                     addFragmentToDisplay(NavigationFragment.class);
 
-                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+                    if (isGetDirectionsClicked && addToMapPolyline != null) {
                         mMap.addPolyline(addToMapPolyline);
                         isGetDirectionsClicked = false;
                         addToMapPolyline = null;
@@ -173,7 +164,7 @@ public class MainActivity extends AppCompatActivity
                     addFragmentToDisplay(ImportFragment.class);
 
 
-                    if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+                    if (isGetDirectionsClicked && addToMapPolyline != null) {
                         mMap.addPolyline(addToMapPolyline);
                         isGetDirectionsClicked = false;
                         addToMapPolyline = null;
@@ -240,7 +231,7 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
-
+        //TODO: if has empty body
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -304,21 +295,6 @@ public class MainActivity extends AppCompatActivity
 //    public void onClickListenerButton() {
 //        radioGroup = (RadioGroup) findViewById(R.id.rg_navigation_method);
 //        mStartNavigationButton = (Button) findViewById(R.id.startNavigationButton);
-//
-//        PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment)
-//                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
-//
-//        autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-//            @Override
-//            public void onPlaceSelected(Place place) {
-//                addressDest = place.getLatLng();
-//            }
-//
-//            @Override
-//            public void onError(Status status) {
-//                Log.i("AUTO COMPLETE", "An error occurred: " + status);
-//            }
-//        });
 //
 //        mStartNavigationButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -428,6 +404,7 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.map_menu:
                 fragmentClass = ImportFragment.class;
+                mSearchButton.setText("Search");
                 break;
             case R.id.list_traffic_zones:
                 fragmentClass = MainFragment.class;
@@ -443,7 +420,9 @@ public class MainActivity extends AppCompatActivity
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            Log.i("FRAGMENT", "ERROR Loading fragment");
+        }
 
 
         fm.beginTransaction().replace(R.id.main_fragment_for_replacement, fragment).commit();
@@ -701,7 +680,6 @@ public class MainActivity extends AppCompatActivity
 
             if (textSite != null) {
                 List<LatLng> toBeCopied = new ArrayList<>();
-                final int PROGRESS = 0x1;
 
                 for (String a : textSite) {
 

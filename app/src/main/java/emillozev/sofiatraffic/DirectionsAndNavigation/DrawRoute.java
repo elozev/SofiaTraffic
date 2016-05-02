@@ -1,4 +1,4 @@
-package emillozev.sofiatraffic.UI.DirectionsAndNavigation;
+package emillozev.sofiatraffic.DirectionsAndNavigation;
 
 import android.graphics.Color;
 import android.os.AsyncTask;

@@ -1,4 +1,4 @@
-package emillozev.sofiatraffic.UI.Fragments;
+package emillozev.sofiatraffic.Fragments;
 
 import android.app.Fragment;
 import android.app.FragmentManager;

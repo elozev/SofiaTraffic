@@ -1,4 +1,4 @@
-package emillozev.sofiatraffic.UI.BackgroundProcessing;
+package emillozev.sofiatraffic.BackgroundProcessing;
 
 import android.os.AsyncTask;
 

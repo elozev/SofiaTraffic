@@ -1,4 +1,4 @@
-package emillozev.sofiatraffic.UI.DirectionsAndNavigation;
+package emillozev.sofiatraffic.DirectionsAndNavigation;
 
 
 import java.util.ArrayList;

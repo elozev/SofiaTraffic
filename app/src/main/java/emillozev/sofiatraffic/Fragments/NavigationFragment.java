@@ -1,21 +1,14 @@
-package emillozev.sofiatraffic.UI.Fragments;
+package emillozev.sofiatraffic.Fragments;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.model.LatLng;
 
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.UI.MainActivity;
