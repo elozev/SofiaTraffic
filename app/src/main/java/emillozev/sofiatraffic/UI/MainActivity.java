@@ -194,21 +194,6 @@ public class MainActivity extends AppCompatActivity
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); //the ints are getting how often get location info
 
 
-//        mClearRouteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mMap.clear();
-//                markerPoints.clear();
-//                mRoute.clearAll();
-//
-//                for (LatLng latLng : markerForTraffic) {
-//                    mMap.addMarker(new MarkerOptions().position(latLng));
-//                }
-//
-//                mClearRouteButton.setText("");
-//                mClearRouteButton.getBackground().setAlpha(0);
-//            }
-//        });
 
         GeoCoderIsShit geoCoderIsShit = new GeoCoderIsShit();
         geoCoderIsShit.execute("ape");

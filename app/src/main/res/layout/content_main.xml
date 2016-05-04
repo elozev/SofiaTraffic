@@ -34,14 +34,6 @@
             android:background="#75c8c8c8"
             android:allowUndo="true"/>
 
-        <Button
-            android:layout_width="135dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/clear_route"
-            android:text="Clear Route"
-            android:layout_gravity="center|bottom"
-            android:background="@android:color/transparent"/>
-
     </FrameLayout>
 
 </RelativeLayout>
