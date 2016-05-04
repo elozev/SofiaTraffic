@@ -36,9 +36,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -59,7 +56,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import emillozev.sofiatraffic.R;
-import emillozev.sofiatraffic.DirectionsAndNavigation.DrawRoute;
 import emillozev.sofiatraffic.Fragments.ImportFragment;
 import emillozev.sofiatraffic.Fragments.MainFragment;
 import emillozev.sofiatraffic.Fragments.NavigationFragment;
@@ -67,21 +63,17 @@ import emillozev.sofiatraffic.Fragments.NavigationFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener {
 
-    private static final int REQUEST_PLACE_PICKER = 23;
     public SupportMapFragment mMapFragment;
     private GoogleMap mMap;
     private final int REQUEST_CODE_PERMISSION = 0;
     private ArrayList<LatLng> markerPoints;
-
     private boolean isGetDirectionsClicked = false;
     private PolylineOptions addToMapPolyline = new PolylineOptions();
     private String[] textFromSite = null;
     private List<LatLng> markerForTraffic = new ArrayList<>();
-    private LocationManager mLocationManager;
     private Button mSearchButton;
     private boolean isSearchButtonOnMap = true;
     private Button mSpeedButton;
-    private Button mClearRouteButton;
 
 
     private MapFragment mFragmentMap = new MapFragment();
@@ -94,14 +86,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mSpeedButton = (Button) findViewById(R.id.speedometerButton);
-        mClearRouteButton = (Button) findViewById(R.id.clear_route);
         mSearchButton = (Button) findViewById(R.id.searchButton);
 
-
-        if (!isGetDirectionsClicked) {
-            mClearRouteButton.getBackground().setAlpha(100);
-            mClearRouteButton.setText("");
-        }
 
         mMapFragment = SupportMapFragment.newInstance();
 
@@ -167,7 +153,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         //TODO: if has empty body
-        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -539,25 +525,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
 
-//        if (isGetDirectionsClicked == true && addToMapPolyline != null) {
-//            mMap.addPolyline(addToMapPolyline);
-//            isGetDirectionsClicked = false;
-//            addToMapPolyline = null;
-//        }
-//
-//        if (isSearchButtonOnMap == true) {
-//            //isSearchButtonOnMap = false;
-////            mSpeedButton.setText("");
-//        } else {
-//            float currentSpeed = location.getSpeed();
-//            mSpeedButton.setText((double) Math.round(currentSpeed * (1000 / 60) * 100) / 100 + " km/h");
-//        }
-//
-//        for (LatLng latLng : markerForTraffic) {
-//            if (distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
-//                sendNotifications();
-//            }
-//        }
+        if (isGetDirectionsClicked == true && addToMapPolyline != null) {
+            mMap.addPolyline(addToMapPolyline);
+            isGetDirectionsClicked = false;
+            addToMapPolyline = null;
+        }
+
+        if (isSearchButtonOnMap == true) {
+            isSearchButtonOnMap = false;
+            mSpeedButton.setText("");
+        } else {
+            float currentSpeed = location.getSpeed();
+            mSpeedButton.setText((double) Math.round(currentSpeed * (1000 / 60) * 100) / 100 + " km/h");
+        }
+
+        for (LatLng latLng : markerForTraffic) {
+            if (distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
+                sendNotifications();
+            }
+        }
     }
 
     @Override
