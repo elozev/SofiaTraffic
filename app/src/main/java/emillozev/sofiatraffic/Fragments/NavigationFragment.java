@@ -29,11 +29,6 @@ import emillozev.sofiatraffic.UI.MainActivity;
 
 public class NavigationFragment extends Fragment{
 
-    private PlaceAutocompleteFragment autocompleteFragment = new PlaceAutocompleteFragment();
-    private PlaceAutocompleteFragment autocompleteFragment2 = new PlaceAutocompleteFragment();
-    private Button mGetDirectionsButton;
-    private Button mStartNavigation;
-
     public static LatLng origin;
     public static LatLng dest;
     public static PolylineOptions polylineOptions;
@@ -47,7 +42,7 @@ public class NavigationFragment extends Fragment{
         final View navigation_fragment = inflater.inflate(R.layout.navigation_fragment, container, false);
         final MainActivity mainActivity = (MainActivity) getActivity();
 
-        autocompleteFragment = (PlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -61,7 +56,7 @@ public class NavigationFragment extends Fragment{
             }
         });
 
-        autocompleteFragment2 = (PlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
+        PlaceAutocompleteFragment autocompleteFragment2 = (PlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment2);
 
         autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -76,7 +71,7 @@ public class NavigationFragment extends Fragment{
         });
 
 
-        mGetDirectionsButton = (Button) navigation_fragment.findViewById(R.id.getDirectionsButton);
+        Button mGetDirectionsButton = (Button) navigation_fragment.findViewById(R.id.getDirectionsButton);
 
         mGetDirectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +95,7 @@ public class NavigationFragment extends Fragment{
             }
         });
 
-        mStartNavigation = (Button) navigation_fragment.findViewById(R.id.startNavigationButton);
+        Button mStartNavigation = (Button) navigation_fragment.findViewById(R.id.startNavigationButton);
         radioGroup = (RadioGroup) navigation_fragment.findViewById(R.id.rg_navigation_method);
 
         mStartNavigation.setOnClickListener(new View.OnClickListener() {
@@ -115,17 +110,17 @@ public class NavigationFragment extends Fragment{
                         Log.i("SELECTED ID", "" + selectedId);
                         radioB = (RadioButton) navigation_fragment.findViewById(selectedId);
                         Toast.makeText(mainActivity, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
-                        if (radioB.getText().toString() == "Car") {
+                        if (radioB.getText().toString().equals("Car")) {
                             modeForNavigation = "d";
-                        } else if (radioB.getText().toString() == "Walking") {
+                        } else if (radioB.getText().toString().equals("Walking")) {
                             modeForNavigation = "w";
-                        } else if (radioB.getText().toString() == "Bicycle") {
+                        } else if (radioB.getText().toString().equals("Bicycle")) {
                             modeForNavigation = "b";
                         } else {
                             modeForNavigation = "d";
                         }
                     }
-
+                    Toast.makeText(mainActivity, modeForNavigation, Toast.LENGTH_SHORT).show();
                     Uri gmmIntentUri = Uri.parse("google.navigation:q=" + dest.latitude + "," + dest.longitude + "&mode=" + modeForNavigation);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");
