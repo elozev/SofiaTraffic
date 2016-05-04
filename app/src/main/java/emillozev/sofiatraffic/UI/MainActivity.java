@@ -71,10 +71,7 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
     private final int REQUEST_CODE_PERMISSION = 0;
     private ArrayList<LatLng> markerPoints;
-    public DrawRoute mRoute;
-    private LatLng addressOrigin;
-    private LatLng addressDest;
-    private Button getDirectionsButton;
+
     private boolean isGetDirectionsClicked = false;
     private PolylineOptions addToMapPolyline = new PolylineOptions();
     private String[] textFromSite = null;
@@ -84,12 +81,8 @@ public class MainActivity extends AppCompatActivity
     private boolean isSearchButtonOnMap = true;
     private Button mSpeedButton;
     private Button mClearRouteButton;
-    private Button mStartNavigationButton;
-    public boolean isCopyReady = false;
 
     private MapFragment mFragmentMap = new MapFragment();
-
-    private ProgressBar mProgress = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +102,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         mMapFragment = SupportMapFragment.newInstance();
-        getDirectionsButton = (Button) findViewById(R.id.getDirectionsButton);
-        mRoute = new DrawRoute();
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -358,14 +349,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         FragmentManager fm = getFragmentManager();
-        android.support.v4.app.FragmentManager sFm = getSupportFragmentManager();
 
-        Fragment fragment = null;
-        Class fragmentClass;
         switch (item.getItemId()) {
             case R.id.map_menu:
-                fragmentClass = ImportFragment.class;
-
                 ImportFragment importFragment = new ImportFragment();
                 fm.beginTransaction().replace(R.id.main_fragment_for_replacement, importFragment).commit();
 
@@ -373,32 +359,21 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.list_traffic_zones:
-
-                fragmentClass = MainFragment.class;
                 MainFragment mainFragment = new MainFragment();
                 fm.beginTransaction().replace(R.id.main_fragment_for_replacement, mainFragment).commit();
                 break;
 
             case R.id.search_places:
-
-                fragmentClass = NavigationFragment.class;
                 NavigationFragment navigationFragment = new NavigationFragment();
                 fm.beginTransaction().replace(R.id.main_fragment_for_replacement, navigationFragment).commit();
                 break;
 
             default:
-                fragmentClass = ImportFragment.class;
+                importFragment = new ImportFragment();
+                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, importFragment).commit();
+
         }
 
-//
-//        try {
-//            fragment = (Fragment) fragmentClass.newInstance();
-//        } catch (Exception e) {
-//            Log.i("FRAGMENT", "ERROR Loading fragment");
-//        }
-//
-//
-//        fm.beginTransaction().replace(R.id.main_fragment_for_replacement, fragment).commit();
         item.setChecked(true);
         setTitle(item.getTitle());
 
@@ -411,7 +386,7 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
         mMap = googleMap;
-        markerPoints = new ArrayList<LatLng>();
+        markerPoints = new ArrayList<>();
 
         mMap.setTrafficEnabled(true);
         // Add a marker in Sofia and move the camera
@@ -671,8 +646,6 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 markerForTraffic = new ArrayList<>(toBeCopied);
-                isCopyReady = true;
-
             } else {
                 Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
             }

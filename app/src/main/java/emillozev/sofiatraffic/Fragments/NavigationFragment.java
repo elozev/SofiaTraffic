@@ -1,6 +1,8 @@
 package emillozev.sofiatraffic.Fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -93,6 +95,10 @@ public class NavigationFragment extends Fragment{
 
                     mRoute.downloadTask(url);
                     polylineOptions = mRoute.getLinesOptions();
+
+                    FragmentManager fm = getFragmentManager();
+                    ImportFragment importFragment = new ImportFragment();
+                    fm.beginTransaction().replace(R.id.main_fragment_for_replacement, importFragment).commit();
                 }
             }
         });
