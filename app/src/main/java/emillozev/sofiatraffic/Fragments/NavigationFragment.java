@@ -98,6 +98,7 @@ public class NavigationFragment extends Fragment{
         });
 
         mStartNavigation = (Button) navigation_fragment.findViewById(R.id.startNavigationButton);
+        radioGroup = (RadioGroup) navigation_fragment.findViewById(R.id.rg_navigation_method);
 
         mStartNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
