@@ -46,6 +46,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isSearchButtonOnMap = true;
     private Button mSpeedButton;
     private Button mClearRouteButton;
+
 
     private MapFragment mFragmentMap = new MapFragment();
 
@@ -152,7 +154,6 @@ public class MainActivity extends AppCompatActivity
 
                     addFragmentToDisplay(ImportFragment.class);
 
-
                     if (isGetDirectionsClicked && addToMapPolyline != null) {
                         mMap.addPolyline(addToMapPolyline);
                         isGetDirectionsClicked = false;
@@ -164,62 +165,6 @@ public class MainActivity extends AppCompatActivity
             }
 
         });
-//
-
-//        getDirectionsButton.setOnClickListener(new View.OnClickListener() {
-//
-//
-//            @Override
-//            public void onClick(View v) {
-//
-////
-////                if (addressOrigin == null && addressDest == null) {
-////                    Toast.makeText(MainActivity.this, "Please fill up both!", Toast.LENGTH_LONG).show();
-////                } else {
-////                    for (int i = 0; i < 2; i++) {
-////                        MarkerOptions options = new MarkerOptions();
-////                        if (i == 0) {
-////                            options.position(addressOrigin);
-////                        } else {
-////                            options.position(addressDest);
-////                        }
-////
-////                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-////
-////
-////                        // Add new marker to the Google Map Android API V2
-////
-////                        mMap.addMarker(options);
-////                    }
-////
-////
-////                    mRoute.clearAll();
-////                    mRoute.addMarkerToList(addressOrigin);
-////                    mRoute.addMarkerToList(addressDest);
-////                    // Getting URL to the Google Directions API
-////                    String url = mRoute.getDirectionsUrl(addressOrigin, addressDest);
-////                    Log.i("DIRECTIONS", "SOMETHING");
-////                    mRoute.downloadTask(url);
-////                    mMap.addPolyline(mRoute.getLinesOptions());
-////
-////                    addToMapPolyline = mRoute.getLinesOptions();
-////                    isGetDirectionsClicked = true;
-//////
-//////                    if (!mMapFragment.isAdded())
-//////                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
-//////                    else
-//////                        fm.beginTransaction().show(mMapFragment).commit();
-////
-////                    mClearRouteButton.setText("Clear Route");
-////                    mClearRouteButton.getBackground().setAlpha(64);
-////
-////                }
-////                mMap.addPolyline(mRoute.getLinesOptions());
-////                mSearchButton.setText("Search");
-////                isSearchButtonOnMap = true;
-//                Toast.makeText(MainActivity.this, "clicked", Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         //TODO: if has empty body
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -296,7 +241,6 @@ public class MainActivity extends AppCompatActivity
                 } catch (IOException e) {
                     return;
                 }
-
 
                 Elements newsHeadlines = doc.select(".dhtzelement");
                 textFromSite = newsHeadlines.text().toString().split("\\b(?:към|от)\\b");
@@ -393,7 +337,6 @@ public class MainActivity extends AppCompatActivity
         LatLng sofia = new LatLng(42.697626, 23.322284);
         float zoomLevel = (float) 11.00; //This goes up to 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sofia, zoomLevel));
-        mMap.addMarker(new MarkerOptions().position(sofia));
 
         checkIfLocationTurned();
         isInternetConnected();
@@ -427,6 +370,40 @@ public class MainActivity extends AppCompatActivity
             Log.i("CHECKIN", "In the if");
         }
 
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if(NavigationFragment.polylineOptions != null) {
+                    for (int i = 0; i < 2; i++) {
+                        MarkerOptions options = new MarkerOptions();
+                        if (i == 0) {
+                            options.position(NavigationFragment.origin);
+                        } else {
+                            options.position(NavigationFragment.dest);
+                        }
+
+                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
+                        mMap.addMarker(options);
+                    }
+
+                    mMap.addPolyline(NavigationFragment.polylineOptions);
+                    NavigationFragment.dest = null;
+                    NavigationFragment.origin = null;
+                    NavigationFragment.polylineOptions = null;
+                }
+            }
+        });
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                mMap.clear();
+                for (LatLng position : markerForTraffic) {
+                    mMap.addMarker(new MarkerOptions().position(position));
+                }
+            }
+        });
     }
 
 

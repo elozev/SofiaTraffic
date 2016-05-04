@@ -53,7 +53,6 @@ public class NavigationFragment extends Fragment{
             @Override
             public void onPlaceSelected(Place place) {
                 origin = place.getLatLng();
-                Toast.makeText(mainActivity, origin.toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -68,7 +67,6 @@ public class NavigationFragment extends Fragment{
             @Override
             public void onPlaceSelected(Place place) {
                 dest = place.getLatLng();
-                Toast.makeText(mainActivity, dest.toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -86,7 +84,6 @@ public class NavigationFragment extends Fragment{
                 if(origin == null && dest == null){
                     Toast.makeText(mainActivity, "Please fill up both for directions", Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(mainActivity, "Button clicked", Toast.LENGTH_LONG).show();
                     mRoute.clearAll();
                     mRoute.addMarkerToList(origin);
                     mRoute.addMarkerToList(dest);
