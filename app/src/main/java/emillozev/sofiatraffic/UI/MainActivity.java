@@ -86,8 +86,7 @@ public class MainActivity extends AppCompatActivity
     private Button mClearRouteButton;
     private Button mStartNavigationButton;
     public boolean isCopyReady = false;
-    private static RadioGroup radioGroup;
-    private static RadioButton radioB;
+
     private MapFragment mFragmentMap = new MapFragment();
 
     private ProgressBar mProgress = null;
@@ -98,7 +97,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        onClickListenerButton();
 
         mSpeedButton = (Button) findViewById(R.id.speedometerButton);
         mClearRouteButton = (Button) findViewById(R.id.clear_route);
@@ -183,51 +181,52 @@ public class MainActivity extends AppCompatActivity
 //            @Override
 //            public void onClick(View v) {
 //
-//
-//                if (addressOrigin == null && addressDest == null) {
-//                    Toast.makeText(MainActivity.this, "Please fill up both!", Toast.LENGTH_LONG).show();
-//                } else {
-//                    for (int i = 0; i < 2; i++) {
-//                        MarkerOptions options = new MarkerOptions();
-//                        if (i == 0) {
-//                            options.position(addressOrigin);
-//                        } else {
-//                            options.position(addressDest);
-//                        }
-//
-//                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-//
-//
-//                        // Add new marker to the Google Map Android API V2
-//
-//                        mMap.addMarker(options);
-//                    }
-//
-//
-//                    mRoute.clearAll();
-//                    mRoute.addMarkerToList(addressOrigin);
-//                    mRoute.addMarkerToList(addressDest);
-//                    // Getting URL to the Google Directions API
-//                    String url = mRoute.getDirectionsUrl(addressOrigin, addressDest);
-//                    Log.i("DIRECTIONS", "SOMETHING");
-//                    mRoute.downloadTask(url);
-//                    mMap.addPolyline(mRoute.getLinesOptions());
-//
-//                    addToMapPolyline = mRoute.getLinesOptions();
-//                    isGetDirectionsClicked = true;
 ////
-////                    if (!mMapFragment.isAdded())
-////                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
-////                    else
-////                        fm.beginTransaction().show(mMapFragment).commit();
-//
-//                    mClearRouteButton.setText("Clear Route");
-//                    mClearRouteButton.getBackground().setAlpha(64);
-//
-//                }
-//                mMap.addPolyline(mRoute.getLinesOptions());
-//                mSearchButton.setText("Search");
-//                isSearchButtonOnMap = true;
+////                if (addressOrigin == null && addressDest == null) {
+////                    Toast.makeText(MainActivity.this, "Please fill up both!", Toast.LENGTH_LONG).show();
+////                } else {
+////                    for (int i = 0; i < 2; i++) {
+////                        MarkerOptions options = new MarkerOptions();
+////                        if (i == 0) {
+////                            options.position(addressOrigin);
+////                        } else {
+////                            options.position(addressDest);
+////                        }
+////
+////                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+////
+////
+////                        // Add new marker to the Google Map Android API V2
+////
+////                        mMap.addMarker(options);
+////                    }
+////
+////
+////                    mRoute.clearAll();
+////                    mRoute.addMarkerToList(addressOrigin);
+////                    mRoute.addMarkerToList(addressDest);
+////                    // Getting URL to the Google Directions API
+////                    String url = mRoute.getDirectionsUrl(addressOrigin, addressDest);
+////                    Log.i("DIRECTIONS", "SOMETHING");
+////                    mRoute.downloadTask(url);
+////                    mMap.addPolyline(mRoute.getLinesOptions());
+////
+////                    addToMapPolyline = mRoute.getLinesOptions();
+////                    isGetDirectionsClicked = true;
+//////
+//////                    if (!mMapFragment.isAdded())
+//////                        fm.beginTransaction().add(R.id.map, mMapFragment).commit();
+//////                    else
+//////                        fm.beginTransaction().show(mMapFragment).commit();
+////
+////                    mClearRouteButton.setText("Clear Route");
+////                    mClearRouteButton.getBackground().setAlpha(64);
+////
+////                }
+////                mMap.addPolyline(mRoute.getLinesOptions());
+////                mSearchButton.setText("Search");
+////                isSearchButtonOnMap = true;
+//                Toast.makeText(MainActivity.this, "clicked", Toast.LENGTH_SHORT).show();
 //            }
 //        });
 
@@ -291,44 +290,6 @@ public class MainActivity extends AppCompatActivity
         fm.beginTransaction().replace(R.id.main_fragment_for_replacement, fragment).commit();
 
     }
-
-//    public void onClickListenerButton() {
-//        radioGroup = (RadioGroup) findViewById(R.id.rg_navigation_method);
-//        mStartNavigationButton = (Button) findViewById(R.id.startNavigationButton);
-//
-//        mStartNavigationButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (addressDest != null && addressOrigin == null) {
-//                    String modeForNavigation;
-//                    int selectedId = radioGroup.getCheckedRadioButtonId();
-//                    if (selectedId == -1) {
-//                        modeForNavigation = "d";
-//                    } else {
-//                        Log.i("SELECTED ID", "" + selectedId);
-//                        radioB = (RadioButton) findViewById(selectedId);
-//                        Toast.makeText(MainActivity.this, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
-//                        if (radioB.getText().toString() == "Car") {
-//                            modeForNavigation = "d";
-//                        } else if (radioB.getText().toString() == "Walking") {
-//                            modeForNavigation = "w";
-//                        } else if (radioB.getText().toString() == "Bicycle") {
-//                            modeForNavigation = "b";
-//                        } else {
-//                            modeForNavigation = "d";
-//                        }
-//                    }
-//
-//                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + addressDest.latitude + "," + addressDest.longitude + "&mode=" + modeForNavigation);
-//                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-//                    mapIntent.setPackage("com.google.android.apps.maps");
-//                    startActivity(mapIntent);
-//                } else {
-//                    Toast.makeText(MainActivity.this, "Fill in only \"To:\"! The start point is your location! ", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//    }
 
 
     public String[] parsingTheSite() {
@@ -404,28 +365,40 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.map_menu:
                 fragmentClass = ImportFragment.class;
+
+                ImportFragment importFragment = new ImportFragment();
+                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, importFragment).commit();
+
                 mSearchButton.setText("Search");
                 break;
-            case R.id.list_traffic_zones:
-                fragmentClass = MainFragment.class;
-                break;
-            case R.id.search_places:
-                fragmentClass = NavigationFragment.class;
 
+            case R.id.list_traffic_zones:
+
+                fragmentClass = MainFragment.class;
+                MainFragment mainFragment = new MainFragment();
+                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, mainFragment).commit();
                 break;
+
+            case R.id.search_places:
+
+                fragmentClass = NavigationFragment.class;
+                NavigationFragment navigationFragment = new NavigationFragment();
+                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, navigationFragment).commit();
+                break;
+
             default:
                 fragmentClass = ImportFragment.class;
         }
 
-
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            Log.i("FRAGMENT", "ERROR Loading fragment");
-        }
-
-
-        fm.beginTransaction().replace(R.id.main_fragment_for_replacement, fragment).commit();
+//
+//        try {
+//            fragment = (Fragment) fragmentClass.newInstance();
+//        } catch (Exception e) {
+//            Log.i("FRAGMENT", "ERROR Loading fragment");
+//        }
+//
+//
+//        fm.beginTransaction().replace(R.id.main_fragment_for_replacement, fragment).commit();
         item.setChecked(true);
         setTitle(item.getTitle());
 

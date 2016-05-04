@@ -15,4 +15,5 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_main">Sofia Traffic</string>
     <string name="initial_speed">0.0 m/s</string>
+    <string name="title_activity_messaging">Messaging</string>
 </resources>
