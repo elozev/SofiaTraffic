@@ -18,6 +18,7 @@ import emillozev.sofiatraffic.UI.MainActivity;
 public class Message extends AppCompatActivity {
 
     private String textToSend = "Hello";
+    private boolean isConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,28 +27,52 @@ public class Message extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Button connectButton = (Button) findViewById(R.id.connectButton);
+        final Button connectButton = (Button) findViewById(R.id.connectButton);
+        Button sendButton = (Button) findViewById(R.id.sendButton);
         final EditText textField = (EditText) findViewById(R.id.messageToSend);
+        final EchoClient echoClient = new EchoClient();
 
-        connectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!textField.getText().toString().equals("")) {
-                    textToSend = textField.getText().toString();
-                    Log.i("TEXTFIELD", textToSend);
-                    EchoClient echoClient = new EchoClient(textToSend);
-                    echoClient.start();
-//                    try {
-//                        echoClient.join();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-                    textField.setText("");
-                }else{
-                    Toast.makeText(Message.this, "You cannot send empty message", Toast.LENGTH_SHORT).show();
+
+        if(connectButton != null) {
+            connectButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!isConnected) {
+//                        textToSend = textField.getText().toString();
+//                        Log.i("TEXTFIELD", textToSend);
+
+                        echoClient.start();
+//                        textField.setText("");
+                        connectButton.setText("DISCONNECT");
+                        isConnected = true;
+                    }else{
+                        try {
+                            echoClient.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        connectButton.setText("CONNECT");
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        if(sendButton != null) {
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isConnected && textField.getText() != null){
+                        echoClient.setTextToSend(textField.getText().toString());
+                        textField.setText("");
+                    }else if(!isConnected){
+                        Toast.makeText(Message.this, "Please connect first", Toast.LENGTH_SHORT).show();
+                    }else if(textField.getText() == null){
+                        Toast.makeText(Message.this, "Please fill message", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+        }
 
     }
 

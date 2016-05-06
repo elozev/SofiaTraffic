@@ -17,9 +17,10 @@
         android:layout_height="wrap_content"
         android:text="Connect"
         android:id="@+id/connectButton"
-        android:layout_marginTop="43dp"
+        android:layout_marginTop="40dp"
         android:layout_below="@+id/messageToSend"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="53dp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -27,4 +28,23 @@
         android:id="@+id/messageToSend"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/messageBox"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/connectButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:id="@+id/sendButton"
+        android:layout_above="@+id/messageBox"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="47dp" />
 </RelativeLayout>
