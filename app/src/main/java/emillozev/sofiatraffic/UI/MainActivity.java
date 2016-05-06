@@ -47,6 +47,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.nearby.messages.Message;
 
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
@@ -59,6 +60,7 @@ import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.Fragments.ImportFragment;
 import emillozev.sofiatraffic.Fragments.MainFragment;
 import emillozev.sofiatraffic.Fragments.NavigationFragment;
+import emillozev.sofiatraffic.Messaging.*;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener {
@@ -274,8 +276,10 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.list_traffic_zones:
-                MainFragment mainFragment = new MainFragment();
-                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, mainFragment).commit();
+//                MainFragment mainFragment = new MainFragment();
+//                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, mainFragment).commit();
+                Intent intent = new Intent(this, emillozev.sofiatraffic.Messaging.Message.class);
+                startActivity(intent);
                 break;
 
             case R.id.search_places:
@@ -595,7 +599,8 @@ public class MainActivity extends AppCompatActivity
                 }
                 markerForTraffic = new ArrayList<>(toBeCopied);
             } else {
-                Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, "Please enable data and restart the app!", Toast.LENGTH_LONG).show();
+                Log.i("ASYNCTASK","NO INTERNET");
             }
             return markerForTraffic;
         }
