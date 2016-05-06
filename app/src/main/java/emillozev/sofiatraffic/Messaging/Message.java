@@ -67,7 +67,7 @@ public class Message extends AppCompatActivity {
                     }else if(!isConnected){
                         Toast.makeText(Message.this, "Please connect first", Toast.LENGTH_SHORT).show();
                     }else if(textField.getText() == null){
-                        Toast.makeText(Message.this, "Please fill message", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Message.this, "Please fill in message", Toast.LENGTH_SHORT).show();
                     }
 
                 }

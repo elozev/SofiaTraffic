@@ -5,7 +5,6 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -25,36 +24,61 @@ public class EchoClient extends Thread {
     }
     @Override
     public void run() {
-        try (Socket echoSocket = new Socket(HOST, PORT);
-             PrintWriter outStream = new PrintWriter(echoSocket.getOutputStream(),true);
-             BufferedReader inReader = new BufferedReader(
-                     new InputStreamReader(echoSocket.getInputStream()))
-        ) {
-
-            while(true) {
-                if(send) {
-                    outStream.println(textToSend);
-
-                    String inputReader = new String(inReader.readLine());
-
-                    Log.d("INPUTREADER", inputReader);
-                    // do something...
-                    Log.d("ECHO", "echo: " + new String(inReader.readLine()));
-                    //echoSocket.close();
-                    send = false;
-                }
-            }
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+        Socket echoSocket = null;
+        try {
+            echoSocket = new Socket(HOST, PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        PrintWriter outStream = null;
+        try {
+            outStream = new PrintWriter(echoSocket.getOutputStream(),true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        BufferedReader inReader = null;
+        try {
+            inReader = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        while(true) {
+                if(send) {
+                    outStream.println(textToSend);
+                    String inputReader = null;
+                    try {
+                        inputReader = new String(inReader.readLine());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.d("INPUTREADER", inputReader);
+                    // do something...
+                    try {
+                        Log.d("ECHO", "echo: " + new String(inReader.readLine()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //echoSocket.close();
+                    send = false;
+                }
+        }
+            //echoSocket.close();
+//        try {
+//            //inReader.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+      //  outStream.close();
+
     }
 
     public static void main(String[] args) {
-//        EchoClient client = new EchoClient(textToSend);
-//        client.start();
+        EchoClient client = new EchoClient();
+        client.start();
     }
 
 }
