@@ -11,9 +11,13 @@ import java.net.UnknownHostException;
 
 public class EchoClient extends Thread {
 
-    private static final String TEXT = "the text sent to server\n";
+    private String textToSend;
     private static final String HOST = "192.168.0.103";
     private static final int PORT = 4444;
+
+    public EchoClient(String text){
+        textToSend = text;
+    }
 
     @Override
     public void run() {
@@ -23,21 +27,23 @@ public class EchoClient extends Thread {
                      new InputStreamReader(echoSocket.getInputStream()))
         ) {
 
-            outStream.write(TEXT.getBytes());
+            outStream.write(textToSend.getBytes());
             outStream.flush();
 
             // do something...
             Log.i("ECHO","echo: " + new String(inReader.readLine()));
+            echoSocket.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public static void main(String[] args) {
-        EchoClient client = new EchoClient();
-        client.start();
+//        EchoClient client = new EchoClient(textToSend);
+//        client.start();
     }
 
 }
