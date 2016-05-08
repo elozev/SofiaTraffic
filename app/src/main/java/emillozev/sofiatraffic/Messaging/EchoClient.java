@@ -7,78 +7,93 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class EchoClient extends Thread {
 
-    private String textToSend;
+    private String textToSend = "LOGIN 9697876";
     private static final String HOST = "192.168.0.103";
     private static final int PORT = 4444;
     private boolean send = false;
-
-    public EchoClient(){}
+    public static String receivedMessage;
 
     public void setTextToSend(String text){
         textToSend = text;
         send = true;
     }
+
     @Override
     public void run() {
-        Socket echoSocket = null;
+        Socket socket = null;
         try {
-            echoSocket = new Socket(HOST, PORT);
+            socket = new Socket(HOST, PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+
         PrintWriter outStream = null;
         try {
-            outStream = new PrintWriter(echoSocket.getOutputStream(),true);
+            outStream = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
         BufferedReader inReader = null;
         try {
-            inReader = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+            inReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+     //   while(textToSend != null){
+            Log.i("SERVER","Send to server: " + textToSend);
+            outStream.println(textToSend);
 
-        while(true) {
-                if(send) {
-                    outStream.println(textToSend);
-                    String inputReader = null;
-                    try {
-                        inputReader = new String(inReader.readLine());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    Log.d("INPUTREADER", inputReader);
-                    // do something...
-                    try {
-                        Log.d("ECHO", "echo: " + new String(inReader.readLine()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //echoSocket.close();
-                    send = false;
+            String fromServer;
+            try {
+                if((fromServer = inReader.readLine()) != null){
+                    Log.i("Server", "Received from server: " + fromServer);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        outStream.println("BRDCAST neshto");
+        String fromServer2;
+        try {
+            if((fromServer2 = inReader.readLine()) != null){
+                Log.i("Server", "Received from server2: " + fromServer2);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-            //echoSocket.close();
-//        try {
-//            //inReader.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-      //  outStream.close();
+
+        outStream.println("GET");
+        String fromServer3;
+        try {
+            if((fromServer3 = inReader.readLine()) != null){
+                Log.i("Server", "Received from server3: " + fromServer3);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Log.i("SERVER", "DATA: " + fromServer3);
+
+        //   }
+        Log.i("SERVER", "END OF CONNECTION");
+
+        outStream.close();
+        try {
+            inReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
     public static void main(String[] args) {
-        EchoClient client = new EchoClient();
-        client.start();
+//        EchoClient client = new EchoClient();
+//        client.start();
     }
 
 }
