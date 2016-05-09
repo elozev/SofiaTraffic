@@ -10,15 +10,15 @@ import java.net.Socket;
 
 public class EchoClient extends Thread {
 
-    private String textToSend = "LOGIN 9697876";
     private static final String HOST = "192.168.0.103";
     private static final int PORT = 4444;
-    private boolean send = false;
     public static String receivedMessage;
+    private String client = "LOGIN ";
+    private String message = "";
 
-    public void setTextToSend(String text){
-        textToSend = text;
-        send = true;
+    public EchoClient(String client, String message){
+        this.client += client;
+        this.message = message;
     }
 
     @Override
@@ -29,7 +29,6 @@ public class EchoClient extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         PrintWriter outStream = null;
         try {
@@ -44,20 +43,19 @@ public class EchoClient extends Thread {
             e.printStackTrace();
         }
 
-     //   while(textToSend != null){
-            Log.i("SERVER","Send to server: " + textToSend);
-            outStream.println(textToSend);
+        Log.i("SERVER","Send to server: " + client);
+        outStream.println(client);
 
-            String fromServer;
-            try {
-                if((fromServer = inReader.readLine()) != null){
-                    Log.i("Server", "Received from server: " + fromServer);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        String fromServer;
+        try {
+            if((fromServer = inReader.readLine()) != null){
+                Log.i("Server", "Received from server: " + fromServer);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        outStream.println("BRDCAST neshto");
+        outStream.println("BRDCAST " + message);
         String fromServer2;
         try {
             if((fromServer2 = inReader.readLine()) != null){
@@ -72,15 +70,13 @@ public class EchoClient extends Thread {
         try {
             if((fromServer3 = inReader.readLine()) != null){
                 Log.i("Server", "Received from server3: " + fromServer3);
+                receivedMessage = fromServer3;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //Log.i("SERVER", "DATA: " + fromServer3);
-
-        //   }
-        Log.i("SERVER", "END OF CONNECTION");
+        Log.i("Server", "END OF CONNECTION");
 
         outStream.close();
         try {
@@ -91,9 +87,5 @@ public class EchoClient extends Thread {
 
     }
 
-    public static void main(String[] args) {
-//        EchoClient client = new EchoClient();
-//        client.start();
-    }
 
 }
