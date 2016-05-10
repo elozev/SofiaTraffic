@@ -9,7 +9,7 @@
         <item
             android:id="@+id/list_traffic_zones"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="List"/>
+            android:title="Messaging"/>
         <item
             android:id="@+id/search_places"
             android:icon="@drawable/ic_menu_slideshow"

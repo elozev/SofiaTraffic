@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import emillozev.sofiatraffic.Fragments.MessagingFragment;
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.Fragments.ImportFragment;
 import emillozev.sofiatraffic.Fragments.MainFragment;
@@ -276,10 +277,8 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.list_traffic_zones:
-//                MainFragment mainFragment = new MainFragment();
-//                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, mainFragment).commit();
-                Intent intent = new Intent(this, emillozev.sofiatraffic.Messaging.Message.class);
-                startActivity(intent);
+                MessagingFragment messagingFragment = new MessagingFragment();
+                fm.beginTransaction().replace(R.id.main_fragment_for_replacement,messagingFragment).commit();
                 break;
 
             case R.id.search_places:
