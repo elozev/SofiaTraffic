@@ -3,6 +3,7 @@ package emillozev.sofiatraffic.Messaging;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,7 @@ public class Message extends AppCompatActivity {
         final EditText textField = (EditText) findViewById(R.id.messageToSend);
         final TextView messageBox = (TextView) findViewById(R.id.messageBox);
 
+        messageBox.setMovementMethod(new ScrollingMovementMethod());
 
 
         if (sendButton != null) {
@@ -46,8 +48,12 @@ public class Message extends AppCompatActivity {
                         EchoClient echoClient = new EchoClient(output, textField.getText().toString());
                         echoClient.start();
                         textField.setText("");
+                        String replaceString = "";
 
-                        messageBox.setText(echoClient.receivedMessage);
+                        if(EchoClient.receivedMessage != null)
+                            replaceString = EchoClient.receivedMessage.replaceAll("#", "\n");
+
+                        messageBox.setText(replaceString);
                     }else{
                         Toast.makeText(Message.this, "Please fill the message", Toast.LENGTH_SHORT).show();
                     }
@@ -71,7 +77,12 @@ public class Message extends AppCompatActivity {
                     EchoClient echoClient = new EchoClient(output,"");
                     echoClient.start();
 
-                    messageBox.setText(echoClient.receivedMessage);
+                    String replaceString = "";
+
+                    if(EchoClient.receivedMessage != null)
+                        replaceString = EchoClient.receivedMessage.replaceAll("#", "\n");
+
+                    messageBox.setText(replaceString);
                 }
             });
         }
