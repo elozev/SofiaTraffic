@@ -24,7 +24,6 @@ public class MessagingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainActivity mainActivity = (MainActivity) getActivity();
-
                 Intent intent = new Intent(mainActivity, emillozev.sofiatraffic.Messaging.Message.class);
                 startActivity(intent);
             }
