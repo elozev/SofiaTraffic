@@ -24,7 +24,7 @@ public class Message extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final Button sendButton = (Button) findViewById(R.id.sendButton);
-        Button refreshButton = (Button) findViewById(R.id.refreshButton);
+        final Button refreshButton = (Button) findViewById(R.id.refreshButton);
         final EditText textField = (EditText) findViewById(R.id.messageToSend);
         final TextView messageBox = (TextView) findViewById(R.id.messageBox);
 
@@ -50,10 +50,11 @@ public class Message extends AppCompatActivity {
                         textField.setText("");
                         String replaceString = "";
 
-                        if(EchoClient.receivedMessage != null)
-                            replaceString = EchoClient.receivedMessage.replaceAll("#", "\n");
+                        //if(EchoClient.receivedMessage != null)
+                          //  replaceString = EchoClient.receivedMessage.replaceAll("#", "\n");
 
-                        messageBox.setText(replaceString);
+                        //messageBox.setText(replaceString);
+                        refreshButton.performClick();
                     }else{
                         Toast.makeText(Message.this, "Please fill the message", Toast.LENGTH_SHORT).show();
                     }

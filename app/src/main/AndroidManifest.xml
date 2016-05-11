@@ -9,6 +9,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -64,6 +65,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="emillozev.sofiatraffic.UI.MainActivity" />
         </activity>
+
+        <service android:name=".BackgroundProcessing.NotificationService">
+            <intent-filter>
+                <action android:name=".emillozev.BackgroundProcessing.NotificationService" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".BackgroundProcessing.BootReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>

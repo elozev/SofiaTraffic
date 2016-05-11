@@ -17,19 +17,18 @@
         android:layout_height="wrap_content"
         android:text="SEND"
         android:id="@+id/sendButton"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="58dp"
+        android:background="@color/accent_material_dark"
+        android:layout_marginTop="25dp"
         android:layout_below="@+id/messageToSend"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="53dp"
-        android:background="@color/accent_material_dark" />
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/messageToSend"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:textColor="@color/design_fab_stroke_top_outer_color" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,19 +38,18 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/sendButton"
         android:maxLines="40"
         android:scrollbars = "vertical"
-        android:textColor="@color/abc_secondary_text_material_dark" />
+        android:layout_below="@+id/sendButton" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="REFRESH"
         android:id="@+id/refreshButton"
-        android:layout_above="@+id/messageBox"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="47dp"
+        android:layout_marginEnd="58dp"
         android:textColor="@color/abc_input_method_navigation_guard"
-        android:background="@color/accent_material_dark" />
+        android:background="@color/accent_material_dark"
+        android:layout_alignTop="@+id/sendButton"
+        android:layout_alignEnd="@+id/messageToSend" />
 </RelativeLayout>
