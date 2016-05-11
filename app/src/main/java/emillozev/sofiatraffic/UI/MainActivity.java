@@ -47,7 +47,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.nearby.messages.Message;
 
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
@@ -59,9 +58,7 @@ import java.util.List;
 import emillozev.sofiatraffic.Fragments.MessagingFragment;
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.Fragments.ImportFragment;
-import emillozev.sofiatraffic.Fragments.MainFragment;
 import emillozev.sofiatraffic.Fragments.NavigationFragment;
-import emillozev.sofiatraffic.Messaging.*;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener {
@@ -125,8 +122,8 @@ public class MainActivity extends AppCompatActivity
                 if (isSearchButtonOnMap) {
 
                     isSearchButtonOnMap = false;
-                    mSpeedButton.setText("");
                     mSearchButton.setText("Back to map");
+                    mSpeedButton.setVisibility(View.GONE);
 
                     addFragmentToDisplay(NavigationFragment.class);
 
@@ -140,7 +137,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     mSearchButton.setText("Search");
                     isSearchButtonOnMap = true;
-
+                    mSpeedButton.setVisibility(View.VISIBLE);
                     addFragmentToDisplay(ImportFragment.class);
 
                     if (isGetDirectionsClicked && addToMapPolyline != null) {
@@ -273,17 +270,25 @@ public class MainActivity extends AppCompatActivity
                 ImportFragment importFragment = new ImportFragment();
                 fm.beginTransaction().replace(R.id.main_fragment_for_replacement, importFragment).commit();
 
+                mSearchButton.setVisibility(View.VISIBLE);
                 mSearchButton.setText("Search");
+                mSpeedButton.setVisibility(View.VISIBLE);
                 break;
 
-            case R.id.list_traffic_zones:
+            case R.id.messaging_tab:
                 MessagingFragment messagingFragment = new MessagingFragment();
                 fm.beginTransaction().replace(R.id.main_fragment_for_replacement,messagingFragment).commit();
+
+                mSearchButton.setVisibility(View.GONE);
+                mSpeedButton.setVisibility(View.GONE);
                 break;
 
             case R.id.search_places:
                 NavigationFragment navigationFragment = new NavigationFragment();
                 fm.beginTransaction().replace(R.id.main_fragment_for_replacement, navigationFragment).commit();
+                mSpeedButton.setVisibility(View.GONE);
+                mSearchButton.setVisibility(View.VISIBLE);
+                mSearchButton.setText("Back to map");
                 break;
 
             default:
