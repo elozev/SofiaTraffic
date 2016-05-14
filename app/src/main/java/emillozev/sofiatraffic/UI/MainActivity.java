@@ -59,6 +59,7 @@ import java.util.List;
 
 import emillozev.sofiatraffic.BackgroundProcessing.NotificationService;
 import emillozev.sofiatraffic.Fragments.MessagingFragment;
+import emillozev.sofiatraffic.Fragments.SettingsFragment;
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.Fragments.ImportFragment;
 import emillozev.sofiatraffic.Fragments.NavigationFragment;
@@ -305,6 +306,13 @@ public class MainActivity extends AppCompatActivity
                 mSpeedButton.setVisibility(View.GONE);
                 mSearchButton.setVisibility(View.VISIBLE);
                 mSearchButton.setText("Back to map");
+                break;
+
+            case R.id.settings_tab:
+                SettingsFragment settingsFragment = new SettingsFragment();
+                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, settingsFragment).commit();
+                mSpeedButton.setVisibility(View.GONE);
+                mSearchButton.setVisibility(View.GONE);
                 break;
 
             default:

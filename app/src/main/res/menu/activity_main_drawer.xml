@@ -15,7 +15,7 @@
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Get Directions"/>
         <item
-            android:id="@+id/nav_tools"
+            android:id="@+id/settings_tab"
             android:icon="@drawable/ic_menu_manage"
             android:title="Tools"/>
     </group>

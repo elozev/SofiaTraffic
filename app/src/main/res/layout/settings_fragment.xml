@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/navigation_fragment"
+    android:background="@android:color/white">
+
+    <CheckBox
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:text="Notifications"
+        android:id="@+id/notificationsCheckBox"
+        android:layout_gravity="left|top"
+        android:checked="true"/>
+
+    <CheckBox
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:text="Speedometer"
+        android:id="@+id/speedometerCheckBox"
+        android:layout_gravity="left|center_vertical"
+        android:checked="true"/>
+
+</FrameLayout>
