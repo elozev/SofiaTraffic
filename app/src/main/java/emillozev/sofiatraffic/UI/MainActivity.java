@@ -1,11 +1,13 @@
 package emillozev.sofiatraffic.UI;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -55,6 +57,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import emillozev.sofiatraffic.BackgroundProcessing.NotificationService;
 import emillozev.sofiatraffic.Fragments.MessagingFragment;
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.Fragments.ImportFragment;
@@ -183,6 +186,19 @@ public class MainActivity extends AppCompatActivity
 
         GeoCoderIsShit geoCoderIsShit = new GeoCoderIsShit();
         geoCoderIsShit.execute("ape");
+
+
+
+        Intent notificationIntent = new Intent(this, NotificationService.class);
+        PendingIntent contentIntent = PendingIntent.getService(this, 0, notificationIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        am.cancel(contentIntent);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
+                + AlarmManager.INTERVAL_FIFTEEN_MINUTES / 15, AlarmManager.INTERVAL_FIFTEEN_MINUTES / 15, contentIntent);
+
+
     }
 
     public void addFragmentToDisplay(Class fragmentClass){
@@ -505,30 +521,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public double distanceBetweenLatLng(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371; //kilometers
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLng = Math.toRadians(lng2 - lng1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double dist = (double) (earthRadius * c);
-
-        return dist;
-    }
-
-    private void sendNotifications() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setAutoCancel(true);
-        builder.setContentTitle("Sofia Traffic Notification");
-        builder.setContentText(("You are getting nearby a jammed area!"));
-        builder.setSmallIcon(R.drawable.common_ic_googleplayservices);
-
-        Notification notification = builder.build();
-        NotificationManager manager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
-        manager.notify(8, notification);
-    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -546,19 +538,12 @@ public class MainActivity extends AppCompatActivity
             float currentSpeed = location.getSpeed();
             mSpeedButton.setText((double) Math.round(currentSpeed * (1000 / 60) * 100) / 100 + " km/h");
         }
-
-        for (LatLng latLng : markerForTraffic) {
-            if (distanceBetweenLatLng(latLng.latitude, latLng.longitude, location.getLatitude(), location.getLongitude()) < 1) {
-                sendNotifications();
-            }
-        }
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         Log.d("Latitude", "disable");
     }
-
     @Override
     public void onProviderEnabled(String provider) {
         Log.d("Latitude", "enable");
