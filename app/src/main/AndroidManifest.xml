@@ -90,6 +90,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="emillozev.sofiatraffic.UI.MainActivity" />
         </activity>
+        <activity
+            android:name=".UI.RoadWorkActivity"
+            android:label="@string/title_activity_road_work"
+            android:parentActivityName=".UI.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="emillozev.sofiatraffic.UI.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
