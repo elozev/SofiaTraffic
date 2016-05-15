@@ -21,7 +21,7 @@ import emillozev.sofiatraffic.UI.MainActivity;
 
 public class RoadworksFragment extends Fragment{
 
-    public String textFromSite = "";
+    public String[] textFromSite;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View roadworks = inflater.inflate(R.layout.list_road_works, container, false);
@@ -35,8 +35,13 @@ public class RoadworksFragment extends Fragment{
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                String str = parsingTheSite();
-//                roadworks_text.setText(str);
+                String[] str = parsingTheSite();
+                String newStr = "";
+
+                for(String string : str){
+                    newStr += string + "\n";
+                }
+                roadworks_text.setText(newStr);
                 Toast.makeText(mainActivity, "CLICKED", Toast.LENGTH_SHORT).show();
             }
         });
@@ -46,7 +51,7 @@ public class RoadworksFragment extends Fragment{
 
     }
 
-    public String parsingTheSite() {
+    public String[] parsingTheSite() {
         //Log.i("DOWNLOADING",textFromSite);
 
 
@@ -56,23 +61,29 @@ public class RoadworksFragment extends Fragment{
 
             public void run() {
                 org.jsoup.nodes.Document doc = null;
-                Log.i("DOWNLOADING",textFromSite);
                 try {
                     doc = Jsoup.connect("http://www.api.bg/index.php/bg/promeni/").timeout(10*1000).get();
                 } catch (IOException e) {
                     return;
                 }
 
-                Elements newsHeadlines = doc.select(".news-title");
-                textFromSite = newsHeadlines.text().toString();
-                Log.i("DOWNLOADING",textFromSite);
+                Elements newsHeadlines = doc.select("div.news-item>p");
+
+                textFromSite = newsHeadlines.text().toString().split("\\.[^ ]");
+
+                String text = newsHeadlines.text().toString();
+                Log.i("YOLO2", text + "\n ------------------ \n");
+
+
+                for(String string: textFromSite) {
+                    Log.i("YOLO", string + "\n ------------------ \n");
+                }
             }
         });
         downloadThread.start();
         try {
             downloadThread.join();
         } catch (InterruptedException e) {
-            Log.i("DOWNLOADING", "error downloading");
         }
 
         return textFromSite;
