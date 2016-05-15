@@ -23,7 +23,6 @@ import emillozev.sofiatraffic.UI.RoadWorkActivity;
 
 public class RoadworksFragment extends Fragment{
 
-    public String[] textFromSite;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View roadworks = inflater.inflate(R.layout.list_road_works, container, false);
@@ -60,42 +59,5 @@ public class RoadworksFragment extends Fragment{
 
     }
 
-    public String[] parsingTheSite() {
-        //Log.i("DOWNLOADING",textFromSite);
-
-
-        Thread downloadThread = new Thread(new Runnable() {
-
-            //Log.i("DOWNLOADING",textFromSite);
-
-            public void run() {
-                org.jsoup.nodes.Document doc = null;
-                try {
-                    doc = Jsoup.connect("http://www.api.bg/index.php/bg/promeni/").timeout(10*1000).get();
-                } catch (IOException e) {
-                    return;
-                }
-
-                Elements newsHeadlines = doc.select("div.news-item>p");
-
-                textFromSite = newsHeadlines.text().toString().split("\\.[^ ]");
-
-                String text = newsHeadlines.text().toString();
-                Log.i("YOLO2", text + "\n ------------------ \n");
-
-
-                for(String string: textFromSite) {
-                    Log.i("YOLO", string + "\n ------------------ \n");
-                }
-            }
-        });
-        downloadThread.start();
-        try {
-            downloadThread.join();
-        } catch (InterruptedException e) {
-        }
-
-        return textFromSite;
-    }
 
 }
