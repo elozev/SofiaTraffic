@@ -43,6 +43,8 @@ public class NotificationService extends Service implements LocationListener{
         GeoCoderIsShit geoCoderIsShit = new GeoCoderIsShit();
         geoCoderIsShit.execute("ape");
 
+
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -121,7 +123,7 @@ public class NotificationService extends Service implements LocationListener{
 
                     if (addresses != null && !addresses.isEmpty()) {
                         toBeCopied.add(new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude()));
-                        Log.i("MARKERS", "ADDING TO LIST");
+                        Log.i("SERVICE", "ADDING TO LIST");
                     }
                 }
                 markerForTraffic = new ArrayList<>(toBeCopied);

@@ -66,14 +66,14 @@
                 android:value="emillozev.sofiatraffic.UI.MainActivity" />
         </activity>
 
-        <service android:name="BackgroundProcessing.NotificationService">
+        <service android:name=".BackgroundProcessing.NotificationService">
             <intent-filter>
                 <action android:name="emillozev.BackgroundProcessing.NotificationService" />
             </intent-filter>
         </service>
 
         <receiver
-            android:name="BackgroundProcessing.BootReceiver"
+            android:name=".BackgroundProcessing.BootReceiver"
             android:enabled="true"
             android:exported="true"
             android:label="BootReceiver">

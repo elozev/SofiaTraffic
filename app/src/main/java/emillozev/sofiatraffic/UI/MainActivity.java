@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity
     private boolean isSearchButtonOnMap = true;
     private Button mSpeedButton;
 
+    public static boolean mShowNotifications;
+    public static boolean mShowSpeedometer;
+
 
     private MapFragment mFragmentMap = new MapFragment();
 
@@ -190,15 +193,16 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        Intent notificationIntent = new Intent(this, NotificationService.class);
-        PendingIntent contentIntent = PendingIntent.getService(this, 0, notificationIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
+        if(mShowNotifications) {
+            Intent notificationIntent = new Intent(this, NotificationService.class);
+            PendingIntent contentIntent = PendingIntent.getService(this, 0, notificationIntent,
+                    PendingIntent.FLAG_CANCEL_CURRENT);
 
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        am.cancel(contentIntent);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-                + AlarmManager.INTERVAL_FIFTEEN_MINUTES / 15, AlarmManager.INTERVAL_FIFTEEN_MINUTES / 15, contentIntent);
-
+            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            am.cancel(contentIntent);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
+                    + AlarmManager.INTERVAL_FIFTEEN_MINUTES / 15, AlarmManager.INTERVAL_FIFTEEN_MINUTES / 15, contentIntent);
+        }
 
     }
 
@@ -289,7 +293,10 @@ public class MainActivity extends AppCompatActivity
 
                 mSearchButton.setVisibility(View.VISIBLE);
                 mSearchButton.setText("Search");
-                mSpeedButton.setVisibility(View.VISIBLE);
+
+                if(mShowSpeedometer)
+                    mSpeedButton.setVisibility(View.VISIBLE);
+
                 break;
 
             case R.id.messaging_tab:
@@ -325,6 +332,7 @@ public class MainActivity extends AppCompatActivity
         setTitle(item.getTitle());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
