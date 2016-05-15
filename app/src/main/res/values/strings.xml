@@ -17,4 +17,5 @@
     <string name="initial_speed">0.0 m/s</string>
     <string name="title_activity_messaging">Messaging</string>
     <string name="title_activity_message">Message</string>
+    <string name="title_activity_cameras_web_view">CamerasWebView</string>
 </resources>

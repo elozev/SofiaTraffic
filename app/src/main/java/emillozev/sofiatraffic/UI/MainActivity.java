@@ -23,6 +23,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -58,7 +59,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import emillozev.sofiatraffic.BackgroundProcessing.NotificationService;
+import emillozev.sofiatraffic.Fragments.CamerasFragment;
 import emillozev.sofiatraffic.Fragments.MessagingFragment;
+import emillozev.sofiatraffic.Fragments.RoadworksFragment;
 import emillozev.sofiatraffic.Fragments.SettingsFragment;
 import emillozev.sofiatraffic.R;
 import emillozev.sofiatraffic.Fragments.ImportFragment;
@@ -320,6 +323,22 @@ public class MainActivity extends AppCompatActivity
                 fm.beginTransaction().replace(R.id.main_fragment_for_replacement, settingsFragment).commit();
                 mSpeedButton.setVisibility(View.GONE);
                 mSearchButton.setVisibility(View.GONE);
+                break;
+
+            case R.id.road_works_tab:
+                RoadworksFragment roadworksFragment = new RoadworksFragment();
+                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, roadworksFragment).commit();
+                mSpeedButton.setVisibility(View.GONE);
+                mSearchButton.setVisibility(View.GONE);
+
+                break;
+
+            case R.id.cameras_tab:
+                CamerasFragment camerasFragment = new CamerasFragment();
+                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, camerasFragment).commit();
+                mSpeedButton.setVisibility(View.GONE);
+                mSearchButton.setVisibility(View.GONE);
+
                 break;
 
             default:

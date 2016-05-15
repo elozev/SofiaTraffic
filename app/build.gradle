@@ -34,4 +34,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:8.4.0'
     compile 'com.parse.bolts:bolts-android:1.+'
     compile 'com.parse:parse-android:1.+'
+    compile 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
 }

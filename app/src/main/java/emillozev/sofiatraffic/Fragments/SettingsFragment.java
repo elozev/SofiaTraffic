@@ -1,9 +1,7 @@
 package emillozev.sofiatraffic.Fragments;
 
 import android.app.Fragment;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +15,9 @@ import emillozev.sofiatraffic.UI.MainActivity;
 
 public class SettingsFragment extends Fragment {
 
+    public static boolean checkedNotifications;
+    public static boolean checkedSpeedometer;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View settings_fragment = inflater.inflate(R.layout.settings_fragment, container, false);
 
@@ -26,7 +27,7 @@ public class SettingsFragment extends Fragment {
         CheckBox speedometerCheckBox = (CheckBox)
                 settings_fragment.findViewById(R.id.speedometerCheckBox);
 
-        boolean checkedNotifications = PreferenceManager.getDefaultSharedPreferences(getActivity())
+        checkedNotifications = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getBoolean("notificationsCheckBox", false);
         notificationsCheckBox.setChecked(checkedNotifications);
 
@@ -43,7 +44,7 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        boolean checkedSpeedometer = PreferenceManager.getDefaultSharedPreferences(getActivity())
+        checkedSpeedometer = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getBoolean("speedometerCheckBox", false);
         speedometerCheckBox.setChecked(checkedSpeedometer);
 
