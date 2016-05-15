@@ -45,37 +45,37 @@ public class RoadworksFragment extends Fragment{
         return roadworks;
 
     }
-//
-//    public String parsingTheSite() {
-//        //Log.i("DOWNLOADING",textFromSite);
-//
-//
-//        Thread downloadThread = new Thread(new Runnable() {
-//
-//            //Log.i("DOWNLOADING",textFromSite);
-//
-//            public void run() {
-//                org.jsoup.nodes.Document doc = null;
-//                Log.i("DOWNLOADING",textFromSite);
-//                try {
-//                    doc = Jsoup.connect("http://www.api.bg/index.php/bg/promeni").get();
-//                } catch (IOException e) {
-//                    return;
-//                }
-//
-//                Elements newsHeadlines = doc.select(".news-title");
-//                textFromSite = newsHeadlines.text().toString();
-//                Log.i("DOWNLOADING",textFromSite);
-//            }
-//        });
-//        downloadThread.start();
-//        try {
-//            downloadThread.join();
-//        } catch (InterruptedException e) {
-//            Log.i("DOWNLOADING", "error downloading");
-//        }
-//
-//        return textFromSite;
-//    }
+
+    public String parsingTheSite() {
+        //Log.i("DOWNLOADING",textFromSite);
+
+
+        Thread downloadThread = new Thread(new Runnable() {
+
+            //Log.i("DOWNLOADING",textFromSite);
+
+            public void run() {
+                org.jsoup.nodes.Document doc = null;
+                Log.i("DOWNLOADING",textFromSite);
+                try {
+                    doc = Jsoup.connect("http://www.api.bg/index.php/bg/promeni/").timeout(10*1000).get();
+                } catch (IOException e) {
+                    return;
+                }
+
+                Elements newsHeadlines = doc.select(".news-title");
+                textFromSite = newsHeadlines.text().toString();
+                Log.i("DOWNLOADING",textFromSite);
+            }
+        });
+        downloadThread.start();
+        try {
+            downloadThread.join();
+        } catch (InterruptedException e) {
+            Log.i("DOWNLOADING", "error downloading");
+        }
+
+        return textFromSite;
+    }
 
 }
