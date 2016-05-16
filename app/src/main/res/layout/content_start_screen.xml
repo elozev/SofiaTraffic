@@ -14,7 +14,8 @@
     tools:showIn="@layout/activity_start_screen"
     android:clickable="false"
     android:backgroundTintMode="src_atop"
-    android:background="#4caf50">
+    android:background="#FF8000"
+    android:scaleType="fitCenter">
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,13 +24,13 @@
         android:id="@+id/startScreenText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="69dp"
-        android:textSize="35sp"
+        android:textSize="45sp"
         android:textColor="#ffffff"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="powered by Google Maps"
+        android:text="powered TUES"
         android:id="@+id/powerByGoogle"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
