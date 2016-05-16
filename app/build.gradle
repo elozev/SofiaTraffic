@@ -30,9 +30,10 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:8.4.0'
     compile 'com.google.android.gms:play-services-identity:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'org.jsoup:jsoup:+'
     compile 'com.google.android.gms:play-services-auth:8.4.0'
+    compile 'org.jsoup:jsoup:+'
     compile 'com.parse.bolts:bolts-android:1.+'
     compile 'com.parse:parse-android:1.+'
     compile 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
 }
+apply plugin: 'com.google.gms.google-services'

@@ -41,6 +41,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -98,6 +100,18 @@ public class MainActivity extends AppCompatActivity
         mSpeedButton = (Button) findViewById(R.id.speedometerButton);
         mSearchButton = (Button) findViewById(R.id.searchButton);
 
+
+        //GOOGLE SIGN IN
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+
+        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        signInButton.setScopes(gso.getScopeArray());
+        //GOOGLE SIGN IN
 
         mMapFragment = SupportMapFragment.newInstance();
 
