@@ -10,7 +10,7 @@ import java.net.Socket;
 
 public class EchoClient extends Thread {
 
-    private static final String HOST = "192.168.0.103";
+    private static final String HOST = "192.168.0.104";
     private static final int PORT = 4444;
     public static String receivedMessage;
     private String client = "LOGIN ";

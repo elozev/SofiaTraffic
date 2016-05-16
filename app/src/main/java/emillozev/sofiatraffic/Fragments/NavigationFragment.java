@@ -19,7 +19,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -36,7 +35,7 @@ public class NavigationFragment extends Fragment{
     private RadioGroup radioGroup;
     private RadioButton radioB;
 
-    private DrawRoute mRoute = new DrawRoute();
+    private DrawRoute mRoute;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View navigation_fragment = inflater.inflate(R.layout.navigation_fragment, container, false);
@@ -72,6 +71,8 @@ public class NavigationFragment extends Fragment{
 
 
         Button mGetDirectionsButton = (Button) navigation_fragment.findViewById(R.id.getDirectionsButton);
+        Button mStartNavigation = (Button) navigation_fragment.findViewById(R.id.startNavigationButton);
+        radioGroup = (RadioGroup) navigation_fragment.findViewById(R.id.rg_navigation_method);
 
         mGetDirectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +80,24 @@ public class NavigationFragment extends Fragment{
                 if(origin == null && dest == null){
                     Toast.makeText(mainActivity, "Please fill up both for directions", Toast.LENGTH_SHORT).show();
                 }else {
+                    String modeForNavigation;
+                    int selectedId = radioGroup.getCheckedRadioButtonId();
+                    if (selectedId == -1) {
+                        modeForNavigation = "d";
+                    } else {
+                        Log.i("SELECTED ID", "" + selectedId);
+                        radioB = (RadioButton) navigation_fragment.findViewById(selectedId);
+                        if (radioB.getText().toString().equals("Car")) {
+                            modeForNavigation = "driving";
+                        } else if (radioB.getText().toString().equals("Walking")) {
+                            modeForNavigation = "walking";
+                        } else if (radioB.getText().toString().equals("Bicycle")) {
+                            modeForNavigation = "bus";
+                        } else {
+                            modeForNavigation = "driving";
+                        }
+                    }
+                    mRoute = new DrawRoute(modeForNavigation);
                     mRoute.clearAll();
                     mRoute.addMarkerToList(origin);
                     mRoute.addMarkerToList(dest);
@@ -95,8 +114,7 @@ public class NavigationFragment extends Fragment{
             }
         });
 
-        Button mStartNavigation = (Button) navigation_fragment.findViewById(R.id.startNavigationButton);
-        radioGroup = (RadioGroup) navigation_fragment.findViewById(R.id.rg_navigation_method);
+
 
         mStartNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +127,6 @@ public class NavigationFragment extends Fragment{
                     } else {
                         Log.i("SELECTED ID", "" + selectedId);
                         radioB = (RadioButton) navigation_fragment.findViewById(selectedId);
-                        Toast.makeText(mainActivity, radioB.getText().toString(), Toast.LENGTH_SHORT).show();
                         if (radioB.getText().toString().equals("Car")) {
                             modeForNavigation = "d";
                         } else if (radioB.getText().toString().equals("Walking")) {
@@ -120,7 +137,6 @@ public class NavigationFragment extends Fragment{
                             modeForNavigation = "d";
                         }
                     }
-                    Toast.makeText(mainActivity, modeForNavigation, Toast.LENGTH_SHORT).show();
                     Uri gmmIntentUri = Uri.parse("google.navigation:q=" + dest.latitude + "," + dest.longitude + "&mode=" + modeForNavigation);
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                     mapIntent.setPackage("com.google.android.apps.maps");

@@ -22,23 +22,17 @@ import java.util.List;
 public class DrawRoute {
     private ArrayList<LatLng> markerPoints;
     private PolylineOptions linesOptions;
+    private String params;
 
-    public DrawRoute(){
+    public DrawRoute(String params){
         markerPoints = new ArrayList<LatLng>();
         linesOptions = new PolylineOptions();
-    }
-
-    public ArrayList<LatLng> getMarkerPoints(){
-        return markerPoints;
+        this.params = params;
     }
 
     public void clearAll(){
         markerPoints = new ArrayList<LatLng>();
         linesOptions = new PolylineOptions();
-    }
-
-    public int getMarkerPointsSize(){
-        return markerPoints.size();
     }
 
     public void addMarkerToList(LatLng point){
@@ -169,10 +163,6 @@ public class DrawRoute {
                     points.add(position);
                 }
 
-                // Adding all the points in the route to LineOptions
-//                lineOptions.addAll(points);
-//                lineOptions.width(11);
-//                lineOptions.color(Color.BLUE);
             }
 
             // Drawing polyline in the Google Map for the i-th route
@@ -210,7 +200,7 @@ public class DrawRoute {
         }
 
         // Building the parameters to the web service
-        String parameters = str_origin+"&"+str_dest+"&"+sensor+"&"+waypoints;
+        String parameters = str_origin+"&"+str_dest+"&"+sensor+"&mode="+params+"&"+waypoints;
 
         // Output format
         String output = "json";

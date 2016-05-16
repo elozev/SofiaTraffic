@@ -30,7 +30,6 @@ public class Message extends AppCompatActivity {
 
         messageBox.setMovementMethod(new ScrollingMovementMethod());
 
-
         if (sendButton != null) {
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -48,12 +47,7 @@ public class Message extends AppCompatActivity {
                         EchoClient echoClient = new EchoClient(output, textField.getText().toString());
                         echoClient.start();
                         textField.setText("");
-                        String replaceString = "";
 
-                        //if(EchoClient.receivedMessage != null)
-                          //  replaceString = EchoClient.receivedMessage.replaceAll("#", "\n");
-
-                        //messageBox.setText(replaceString);
                         refreshButton.performClick();
                     }else{
                         Toast.makeText(Message.this, "Please fill the message", Toast.LENGTH_SHORT).show();
