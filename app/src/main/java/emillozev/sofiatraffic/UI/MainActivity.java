@@ -41,8 +41,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -83,6 +85,9 @@ public class MainActivity extends AppCompatActivity
     private Button mSearchButton;
     private boolean isSearchButtonOnMap = true;
     private Button mSpeedButton;
+    private GoogleApiClient mGoogleApiClient;
+
+
 
     public static boolean mShowNotifications;
     public static boolean mShowSpeedometer;
@@ -107,10 +112,21 @@ public class MainActivity extends AppCompatActivity
                 .requestEmail()
                 .build();
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
+
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                //startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
         //GOOGLE SIGN IN
 
         mMapFragment = SupportMapFragment.newInstance();
