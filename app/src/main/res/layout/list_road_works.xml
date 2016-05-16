@@ -9,7 +9,6 @@
         <TextView
             android:layout_width="325dp"
             android:layout_height="90dp"
-            android:text="Error loading info"
             android:id="@+id/road_works_text"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true" />
@@ -17,7 +16,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
+        android:text="Click to get latest information"
         android:id="@+id/download"
         android:layout_gravity="center" />
 
