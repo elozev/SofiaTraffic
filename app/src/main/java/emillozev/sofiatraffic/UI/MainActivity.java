@@ -273,7 +273,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            drawer.openDrawer(GravityCompat.START);
+            //super.onBackPressed();
         }
     }
 
@@ -293,6 +294,14 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            FragmentManager fm = getFragmentManager();
+
+            SettingsFragment settingsFragment = new SettingsFragment();
+            fm.beginTransaction().replace(R.id.main_fragment_for_replacement, settingsFragment).commit();
+            mSpeedButton.setVisibility(View.GONE);
+            mSearchButton.setVisibility(View.GONE);
+
+            setTitle("Settings");
             return true;
         }
 
