@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/message_fragment"
-    android:background="@drawable/messaging_clients_comparison"
-    android:scaleType="centerCrop">
+    android:background="@drawable/bubbles"
+    android:scaleType="fitCenter">
 
     <Button
         android:layout_width="wrap_content"

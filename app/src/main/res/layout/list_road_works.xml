@@ -3,7 +3,8 @@
     android:layout_gravity="center_horizontal|bottom"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/roadwork">
+    android:background="@drawable/roadwork"
+    android:scaleType="fitCenter">
 
 
         <TextView
@@ -18,13 +19,8 @@
         android:layout_height="wrap_content"
         android:text="Click to get latest information"
         android:id="@+id/download"
+        android:drawable="@android:color/white"
+        android:textColor="#F00"
         android:layout_gravity="center" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:layout_gravity="center" />
-
 
 </FrameLayout>
