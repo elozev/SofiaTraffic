@@ -76,7 +76,7 @@ import emillozev.sofiatraffic.Fragments.ImportFragment;
 import emillozev.sofiatraffic.Fragments.NavigationFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener, GoogleApiClient.OnConnectionFailedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, LocationListener {
 
     public SupportMapFragment mMapFragment;
     private GoogleMap mMap;
@@ -112,29 +112,6 @@ public class MainActivity extends AppCompatActivity
         mSearchButton = (Button) findViewById(R.id.searchButton);
 
 
-        //GOOGLE SIGN IN
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setScopes(gso.getScopeArray());
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
-        });
-        //GOOGLE SIGN IN
 
         mMapFragment = SupportMapFragment.newInstance();
 
@@ -199,7 +176,6 @@ public class MainActivity extends AppCompatActivity
 
         });
 
-        //TODO: if has empty body
         LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -246,32 +222,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
-        }
-    }
-    private void handleSignInResult(GoogleSignInResult result) {
-        Log.d("GOOGLE", "handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-            //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-            Toast.makeText(MainActivity.this, "LOGIN " + acct.getDisplayName(), Toast.LENGTH_SHORT).show();
-            signInButton.setVisibility(View.GONE);
-
-           // updateUI(true);
-        } else {
-            Toast.makeText(MainActivity.this, "LOGIN " + "FAIL", Toast.LENGTH_SHORT).show();
-            // Signed out, show unauthenticated UI.
-            //updateUI(false);
-        }
-    }
 
 
     public void addFragmentToDisplay(Class fragmentClass){
@@ -632,10 +582,7 @@ public class MainActivity extends AppCompatActivity
         Log.d("Latitude", "status");
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
 
     private class GeoCoderIsShit extends AsyncTask<String, Integer, List<LatLng>> {
         private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
