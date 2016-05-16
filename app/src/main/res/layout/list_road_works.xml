@@ -6,7 +6,6 @@
     android:background="@drawable/roadwork"
     android:scaleType="fitCenter">
 
-
         <TextView
             android:layout_width="325dp"
             android:layout_height="90dp"
