@@ -31,6 +31,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -89,10 +90,7 @@ public class MainActivity extends AppCompatActivity
     private Button mSearchButton;
     private boolean isSearchButtonOnMap = true;
     private Button mSpeedButton;
-    private GoogleApiClient mGoogleApiClient;
-    private static final int RC_SIGN_IN = 9001;
-    private SignInButton signInButton;
-
+    private GeoCoderIsShit mGeoCoderIsShit;
 
 
     public static boolean mShowNotifications;
@@ -110,8 +108,6 @@ public class MainActivity extends AppCompatActivity
 
         mSpeedButton = (Button) findViewById(R.id.speedometerButton);
         mSearchButton = (Button) findViewById(R.id.searchButton);
-
-
 
         mMapFragment = SupportMapFragment.newInstance();
 
@@ -202,10 +198,8 @@ public class MainActivity extends AppCompatActivity
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); //the ints are getting how often get location info
 
-
-
-        GeoCoderIsShit geoCoderIsShit = new GeoCoderIsShit();
-        geoCoderIsShit.execute("ape");
+        mGeoCoderIsShit = new GeoCoderIsShit();
+        mGeoCoderIsShit.execute("ape");
 
 
 
@@ -274,35 +268,40 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             drawer.openDrawer(GravityCompat.START);
-            //super.onBackPressed();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            FragmentManager fm = getFragmentManager();
+        switch (id){
+            case R.id.action_settings:
+                FragmentManager fm = getFragmentManager();
 
-            SettingsFragment settingsFragment = new SettingsFragment();
-            fm.beginTransaction().replace(R.id.main_fragment_for_replacement, settingsFragment).commit();
-            mSpeedButton.setVisibility(View.GONE);
-            mSearchButton.setVisibility(View.GONE);
+                SettingsFragment settingsFragment = new SettingsFragment();
+                fm.beginTransaction().replace(R.id.main_fragment_for_replacement, settingsFragment).commit();
+                mSpeedButton.setVisibility(View.GONE);
+                mSearchButton.setVisibility(View.GONE);
 
-            setTitle("Settings");
-            return true;
+                setTitle("Settings");
+                return true;
+            case R.id.action_refresh:
+                if(mGeoCoderIsShit.getStatus() == AsyncTask.Status.PENDING || mGeoCoderIsShit.getStatus() == AsyncTask.Status.RUNNING){
+                    Toast.makeText(MainActivity.this, "Refresh is already running", Toast.LENGTH_SHORT).show();
+                }else{
+                    mGeoCoderIsShit = new GeoCoderIsShit();
+                    mGeoCoderIsShit.execute("are");
+                }
+                break;
+            default:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
